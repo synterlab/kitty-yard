@@ -927,27 +927,6 @@ function showToast(svgOrIcon, title, sub, rarity="") {
   toastTimeout = setTimeout(() => { el.classList.add("leaving"); setTimeout(() => el.remove(), 300); }, 3500);
 }
 
-function showCoinBurst(areaId, amount) {
-  const scene = document.getElementById(`scene-${areaId}`);
-  if (!scene) return;
-  const pop = document.createElement("div");
-  pop.className = "gift-pop";
-  pop.innerHTML = `🪙 +${amount}`;
-  pop.style.left = `${15 + Math.random() * 60}%`;
-  pop.style.top = "38%";
-  scene.appendChild(pop);
-  setTimeout(() => pop.remove(), 1700);
-  for (let i = 0; i < 8; i++) {
-    setTimeout(() => {
-      const sp = document.createElement("div");
-      sp.className = "coin-sparkle";
-      sp.style.left = `${10 + Math.random() * 80}%`;
-      sp.style.top  = `${20 + Math.random() * 55}%`;
-      scene.appendChild(sp);
-      setTimeout(() => sp.remove(), 900);
-    }, i * 55);
-  }
-}
 
 let sheetEl = null;
 function showBottomSheet(html, onReady=null) {
