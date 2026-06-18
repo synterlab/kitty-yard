@@ -42,13 +42,10 @@ export function showIntroScreen(onStart) {
 
         <!-- Logo -->
         <div class="intro-logo">
-          <div class="intro-logo-paw">🐾</div>
-          <div class="intro-logo-text">
-            <span class="logo-kitty">Kitty</span><span class="logo-yard">Yard</span><span class="version-badge">v2</span>
-          </div>
+          <img src="logo.png" class="intro-logo-img" alt="Kitty Yard" />
           <div class="intro-tagline">A peaceful place where strays come to rest</div>
           <div class="studio-badge">
-            <span class="studio-badge-dot"></span>Synterlab
+            <span class="studio-badge-dot"></span>Synterlab<span class="version-badge" style="margin-left:8px;vertical-align:middle">v2</span>
           </div>
         </div>
 
