@@ -42,11 +42,7 @@ function render() {
   app.innerHTML = `
     <div class="topbar">
       <div class="topbar-logo">
-        <span class="topbar-paw">🐾</span>
-        <div>
-          <div class="topbar-title">Kitty<span>Yard</span></div>
-          <div class="topbar-synterlab">by Synterlab</div>
-        </div>
+        <img src="logo.png" class="topbar-logo-img" alt="Kitty Yard" />
       </div>
       <div class="coin-display">
         <span class="coin-icon">🪙</span>
