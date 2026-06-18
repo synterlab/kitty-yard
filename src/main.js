@@ -319,13 +319,19 @@ function renderAreaScene(area) {
   const visitorsHtml = visitors.length > 0
     ? visitors.map(v => {
         const mood = randomMood(v.cat.rarity);
+        const visits = state.discoveredCats[v.cat.id] || 1;
+        const isNew = visits === 1;
+        const rarityLabel = v.cat.rarity === "legendary" ? "✨ Legendary" : v.cat.rarity === "rare" ? "💎 Rare" : "🐱 Common";
         return `
-          <div class="cat-visitor rarity-${v.cat.rarity}" data-cat="${v.cat.id}">
+          <div class="cat-visitor rarity-${v.cat.rarity}${isNew?" cat-visitor-new":""}" data-cat="${v.cat.id}">
             <div class="cat-rarity-aura"></div>
+            ${isNew ? '<div class="cat-new-badge">New! ✨</div>' : ""}
             <div class="cat-mood-bubble">${mood}</div>
-            <div class="cat-visitor-sprite">${generateCatSVG(v.cat.id, 68)}</div>
+            <div class="cat-visitor-sprite">${generateCatSVG(v.cat.id, 80)}</div>
             <div class="cat-visitor-name">${v.cat.name}</div>
-            <button class="cat-pet-btn" data-pet="${v.cat.id}">🐾</button>
+            <div class="cat-visitor-rarity">${rarityLabel}</div>
+            <div class="cat-visitor-blurb">${v.cat.blurb.slice(0,48)}…</div>
+            <button class="cat-pet-btn" data-pet="${v.cat.id}">🐾 Pet</button>
           </div>`;
       }).join("")
     : `<div class="waiting-scene">
@@ -947,6 +953,7 @@ function renderProfile() {
   const name       = state.playerName || "";
   const xpNow      = totalVisits % 8;
   const xpPct      = Math.round((xpNow / 8) * 100);
+  const totalGifts = state.gallery.length;
 
   const commonCats  = CATS.filter(c=>c.rarity==="common");
   const rareCats    = CATS.filter(c=>c.rarity==="rare");
@@ -956,58 +963,107 @@ function renderProfile() {
   const rf = rareCats.filter(cFound).length;
   const lf = legendCats.filter(cFound).length;
 
-  const fireEmoji = streak >= 7 ? "🔥🔥🔥" : streak >= 3 ? "🔥🔥" : streak >= 1 ? "🔥" : "—";
+  // Pick avatar cat: most-visited discovered cat, or default
+  const topCatId = Object.entries(state.discoveredCats)
+    .sort((a,b)=>b[1]-a[1])[0]?.[0];
+  const avatarSvg = topCatId
+    ? generateCatSVG(topCatId, 72)
+    : `<span style="font-size:52px;line-height:1">🐱</span>`;
+
+  // Streak display
+  const streakFire = streak >= 7 ? "🔥🔥🔥" : streak >= 3 ? "🔥🔥" : streak >= 1 ? "🔥" : "";
+  const streakColor = streak >= 7 ? "#ff4d00" : streak >= 3 ? "#ff8c00" : "#ffc107";
+
+  // Cat collection grid — all 22 cats
+  const catGridHtml = CATS.map(cat => {
+    const discovered = !!state.discoveredCats[cat.id];
+    const visits     = state.discoveredCats[cat.id] || 0;
+    const rarityClass = cat.rarity;
+    if (discovered) {
+      return `<div class="cat-grid-card discovered rarity-card-${rarityClass}" title="${cat.name}: ${cat.blurb}">
+        <div class="cat-grid-sprite">${generateCatSVG(cat.id, 52)}</div>
+        <div class="cat-grid-name">${cat.name}</div>
+        <div class="cat-grid-visits">${visits}x</div>
+        ${rarityClass==="legendary"?'<div class="cat-grid-badge">✨</div>':rarityClass==="rare"?'<div class="cat-grid-badge">💎</div>':''}
+      </div>`;
+    } else {
+      return `<div class="cat-grid-card locked" title="???">
+        <div class="cat-grid-silhouette">🐾</div>
+        <div class="cat-grid-name unknown">???</div>
+      </div>`;
+    }
+  }).join("");
+
+  // Achievement badges
+  const badges = [];
+  if (foundCats >= 1)  badges.push({ icon:"🐱", label:"First Cat!" });
+  if (streak >= 3)     badges.push({ icon:"🔥", label:"On Fire" });
+  if (streak >= 7)     badges.push({ icon:"⚡", label:"Unstoppable" });
+  if (foundCats >= 8)  badges.push({ icon:"📖", label:"Cat Lover" });
+  if (lf >= 1)         badges.push({ icon:"✨", label:"Legend Found" });
+  if (totalGifts >= 10)badges.push({ icon:"🎁", label:"Gift Master" });
+  if (foundCats >= CATS.length) badges.push({ icon:"👑", label:"Complete!" });
+  const badgesHtml = badges.length
+    ? badges.map(b=>`<div class="achieve-badge"><span class="achieve-icon">${b.icon}</span><span class="achieve-lbl">${b.label}</span></div>`).join("")
+    : `<div class="achieve-empty">Keep playing to earn badges! 🌟</div>`;
 
   return `
     <div class="profile-view">
-      <div class="view-header">👤 My Profile</div>
 
-      <div class="profile-card">
-        <div class="profile-avatar-wrap">
-          <div class="profile-avatar">${lvEmoji}</div>
-          <div class="profile-lv-tag">${lvEmoji} Lv.${level}</div>
+      <!-- HERO CARD -->
+      <div class="profile-hero">
+        <div class="profile-hero-bg"></div>
+        <div class="profile-avatar-circle">
+          ${avatarSvg}
         </div>
-        <div class="profile-name-block">
-          <label class="profile-name-label">Garden Name</label>
-          <input class="profile-name-input" id="profile-name-input"
+        <div class="profile-hero-info">
+          <input class="profile-name-input profile-name-big" id="profile-name-input"
             type="text" maxlength="24"
-            placeholder="Tap to set your name…"
+            placeholder="Your garden name…"
             value="${name}" />
+          <div class="profile-level-row">
+            <span class="profile-lv-badge">${lvEmoji} Lv.${level}</span>
+            ${streak > 0 ? `<span class="profile-streak-badge" style="color:${streakColor}">${streakFire} ${streak} day streak</span>` : ""}
+          </div>
+          <div class="profile-xp-slim-wrap">
+            <div class="profile-xp-slim-bg">
+              <div class="profile-xp-slim-fill" style="width:${xpPct}%"></div>
+            </div>
+            <span class="profile-xp-slim-pct">${xpPct}% to Lv.${level+1}</span>
+          </div>
         </div>
       </div>
 
-      <div class="profile-xp-row">
-        <span class="profile-xp-label">XP to next level</span>
-        <div class="profile-xp-bar-bg">
-          <div class="profile-xp-fill" style="width:${xpPct}%"></div>
+      <!-- STATS ROW -->
+      <div class="profile-stats-row">
+        <div class="pstat2-card pstat2-cats">
+          <div class="pstat2-icon">🐱</div>
+          <div class="pstat2-val">${foundCats}<span class="pstat2-denom">/${CATS.length}</span></div>
+          <div class="pstat2-lbl">Cats Found</div>
         </div>
-        <span class="profile-xp-pct">${xpPct}%</span>
-      </div>
-
-      <div class="profile-stats-grid">
-        <div class="pstat-card">
-          <div class="pstat-icon">🐱</div>
-          <div class="pstat-val">${foundCats}<span class="pstat-denom">/${CATS.length}</span></div>
-          <div class="pstat-lbl">Cats Found</div>
+        <div class="pstat2-card pstat2-visits">
+          <div class="pstat2-icon">🎯</div>
+          <div class="pstat2-val">${totalVisits}</div>
+          <div class="pstat2-lbl">Visits</div>
         </div>
-        <div class="pstat-card">
-          <div class="pstat-icon">🎯</div>
-          <div class="pstat-val">${totalVisits}</div>
-          <div class="pstat-lbl">Total Visits</div>
+        <div class="pstat2-card pstat2-coins">
+          <div class="pstat2-icon">🪙</div>
+          <div class="pstat2-val">${totalCoins}</div>
+          <div class="pstat2-lbl">Earned</div>
         </div>
-        <div class="pstat-card">
-          <div class="pstat-icon">🪙</div>
-          <div class="pstat-val">${totalCoins}</div>
-          <div class="pstat-lbl">Coins Earned</div>
-        </div>
-        <div class="pstat-card">
-          <div class="pstat-icon">${streak >= 1 ? "🔥" : "💤"}</div>
-          <div class="pstat-val">${streak}<span class="pstat-denom"> days</span></div>
-          <div class="pstat-lbl">Login Streak</div>
+        <div class="pstat2-card pstat2-gifts">
+          <div class="pstat2-icon">🎁</div>
+          <div class="pstat2-val">${totalGifts}</div>
+          <div class="pstat2-lbl">Gifts</div>
         </div>
       </div>
 
-      <div class="profile-section-title">🏆 Collection Progress</div>
+      <!-- ACHIEVEMENTS -->
+      <div class="profile-section-title">🏅 Achievements</div>
+      <div class="achieve-row">${badgesHtml}</div>
+
+      <!-- COLLECTION PROGRESS BARS -->
+      <div class="profile-section-title">📊 Collection Progress</div>
       <div class="profile-coll-bars">
         <div class="pcb-row">
           <span class="pcb-label">🐱 Common</span>
@@ -1026,6 +1082,11 @@ function renderProfile() {
         </div>
       </div>
 
+      <!-- CAT COLLECTION GRID -->
+      <div class="profile-section-title">🐾 My Cats <span class="cat-grid-total">${foundCats}/${CATS.length}</span></div>
+      <div class="cat-collection-grid">${catGridHtml}</div>
+
+      <!-- SETTINGS -->
       <div class="profile-section-title">⚙️ Settings</div>
       <div class="profile-danger-zone">
         <p class="profile-danger-hint">Resetting will erase all cats, coins, and progress permanently.</p>
