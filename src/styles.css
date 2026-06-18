@@ -1785,3 +1785,409 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:#e8d8c0;color:v
   0%   { opacity: 1; transform: scale(1); }
   100% { opacity: 0; transform: scale(1.04); }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   INTRO GARDEN EDITION v5 — Cats playing in the garden
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Garden sky-to-grass background ── */
+#intro-overlay .intro-bg {
+  background: linear-gradient(180deg,
+    #5bb8e8 0%,
+    #7ecef7 12%,
+    #a8ddf5 26%,
+    #c6e8c0 40%,
+    #8fcc72 56%,
+    #6ab84c 72%,
+    #4ea634 100%
+  ) !important;
+  justify-content: flex-end !important;
+  padding-bottom: 0 !important;
+}
+
+/* ── Particles: leaves & petals drift upward with sway ── */
+#intro-overlay .intro-particles {
+  position: absolute; inset: 0;
+  pointer-events: none; z-index: 0; overflow: hidden;
+}
+#intro-overlay .intro-particle {
+  position: absolute;
+  bottom: -20px;
+  will-change: transform, opacity;
+  animation: gardenParticleDrift linear infinite;
+}
+@keyframes gardenParticleDrift {
+  0%   { transform: translateY(0) translateX(0px) rotate(0deg);   opacity: 0; }
+  8%   { opacity: var(--op, 0.6); }
+  45%  { transform: translateY(-45vh) translateX(28px) rotate(110deg); }
+  88%  { opacity: var(--op, 0.6); }
+  100% { transform: translateY(-108vh) translateX(-18px) rotate(230deg); opacity: 0; }
+}
+
+/* ── Garden sky: sun + clouds container ── */
+.intro-garden-sky {
+  position: absolute; inset: 0;
+  pointer-events: none; z-index: 0; overflow: hidden;
+}
+
+/* ── Animated sun ── */
+.garden-sun {
+  position: absolute;
+  top: 6%; right: 14%;
+  width: 54px; height: 54px;
+}
+.garden-sun-core {
+  position: absolute; inset: 8px;
+  background: radial-gradient(circle, #fff7a0 30%, #ffd740 70%, #ffaa00 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 28px rgba(255,215,0,0.8), 0 0 56px rgba(255,180,0,0.35);
+  animation: sunPulse 4s ease-in-out infinite alternate;
+}
+@keyframes sunPulse {
+  from { box-shadow: 0 0 22px rgba(255,215,0,0.7), 0 0 48px rgba(255,180,0,0.3); }
+  to   { box-shadow: 0 0 38px rgba(255,215,0,1.0), 0 0 72px rgba(255,180,0,0.55); }
+}
+.garden-sun-rays {
+  position: absolute; inset: 0;
+  background: conic-gradient(
+    rgba(255,220,60,0.7) 0deg,   transparent 12deg,
+    rgba(255,220,60,0.7) 24deg,  transparent 36deg,
+    rgba(255,220,60,0.7) 48deg,  transparent 60deg,
+    rgba(255,220,60,0.7) 72deg,  transparent 84deg,
+    rgba(255,220,60,0.7) 96deg,  transparent 108deg,
+    rgba(255,220,60,0.7) 120deg, transparent 132deg,
+    rgba(255,220,60,0.7) 144deg, transparent 156deg,
+    rgba(255,220,60,0.7) 168deg, transparent 180deg,
+    rgba(255,220,60,0.7) 192deg, transparent 204deg,
+    rgba(255,220,60,0.7) 216deg, transparent 228deg,
+    rgba(255,220,60,0.7) 240deg, transparent 252deg,
+    rgba(255,220,60,0.7) 264deg, transparent 276deg,
+    rgba(255,220,60,0.7) 288deg, transparent 300deg,
+    rgba(255,220,60,0.7) 312deg, transparent 324deg,
+    rgba(255,220,60,0.7) 336deg, transparent 348deg,
+    rgba(255,220,60,0.7) 360deg
+  );
+  border-radius: 50%;
+  animation: sunRotate 18s linear infinite;
+  opacity: 0.7;
+}
+@keyframes sunRotate {
+  from { transform: rotate(0deg) scale(1.8); }
+  to   { transform: rotate(360deg) scale(1.8); }
+}
+
+/* ── Drifting clouds ── */
+.garden-cloud {
+  position: absolute;
+  background: white;
+  border-radius: 50px;
+  opacity: 0.88;
+  filter: blur(2px);
+  animation: cloudDrift linear infinite;
+}
+.garden-cloud::before,
+.garden-cloud::after {
+  content: '';
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+}
+.garden-cloud::before {
+  width: 55%; height: 160%;
+  top: -50%; left: 18%;
+}
+.garden-cloud::after {
+  width: 38%; height: 130%;
+  top: -35%; right: 18%;
+}
+@keyframes cloudDrift {
+  0%   { transform: translateX(-120px); }
+  100% { transform: translateX(calc(100vw + 120px)); }
+}
+
+/* ── Cats playing in the garden ── */
+#intro-overlay .intro-bg-cats {
+  position: absolute; inset: 0;
+  pointer-events: none; z-index: 2;
+  overflow: hidden;
+}
+.garden-cat {
+  position: absolute;
+  will-change: transform;
+}
+.garden-cat svg { display: block; }
+
+/* Roll: tumbles across the whole screen */
+.garden-cat-roll {
+  animation: catRollAcross linear infinite;
+}
+@keyframes catRollAcross {
+  0%   { transform: translateX(-80px) rotate(0deg) scaleX(1); }
+  49%  { transform: translateX(calc(55vw)) rotate(360deg) scaleX(1); }
+  50%  { transform: translateX(calc(55vw)) rotate(360deg) scaleX(-1); }
+  100% { transform: translateX(calc(110vw + 80px)) rotate(720deg) scaleX(-1); }
+}
+
+/* Jump: bounces in place with joy */
+.garden-cat-jump {
+  animation: catJumpUp ease-in-out infinite;
+}
+@keyframes catJumpUp {
+  0%,100% { transform: translateY(0) scaleY(1) scaleX(1); }
+  10%      { transform: translateY(0) scaleY(0.85) scaleX(1.1); }
+  40%      { transform: translateY(-38px) scaleY(1.05) scaleX(0.96); }
+  70%      { transform: translateY(-28px) scaleY(1) scaleX(1); }
+  90%      { transform: translateY(-4px) scaleY(0.92) scaleX(1.05); }
+}
+
+/* Zoom: dashes quickly left to right */
+.garden-cat-zoom {
+  animation: catZoomAcross cubic-bezier(0.22,1,0.36,1) infinite;
+}
+@keyframes catZoomAcross {
+  0%   { transform: translateX(-70px) scaleX(1);   opacity: 0; }
+  5%   { opacity: 1; }
+  30%  { transform: translateX(40vw)  scaleX(1); }
+  55%  { transform: translateX(105vw) scaleX(1);   opacity: 1; }
+  56%  { opacity: 0; transform: translateX(105vw) scaleX(1); }
+  57%  { transform: translateX(-70px) scaleX(1); opacity: 0; }
+  100% { transform: translateX(-70px) scaleX(1); opacity: 0; }
+}
+
+/* Bounce: energetic little hops side to side */
+.garden-cat-bounce {
+  animation: catBouncePlay ease-in-out infinite;
+}
+@keyframes catBouncePlay {
+  0%,100% { transform: translateY(0) translateX(0) rotate(0deg); }
+  15%      { transform: translateY(-22px) translateX(8px) rotate(8deg); }
+  30%      { transform: translateY(0) translateX(14px) rotate(0deg); }
+  45%      { transform: translateY(-18px) translateX(6px) rotate(-6deg); }
+  60%      { transform: translateY(0) translateX(0px) rotate(0deg); }
+  75%      { transform: translateY(-14px) translateX(-8px) rotate(4deg); }
+  90%      { transform: translateY(0) translateX(-4px) rotate(0deg); }
+}
+
+/* Peek: rises from below, looks around, dips back */
+.garden-cat-peek {
+  animation: catPeekOut ease-in-out infinite;
+  transform-origin: bottom center;
+}
+@keyframes catPeekOut {
+  0%,100% { transform: translateY(60px) scale(0.8); opacity: 0; }
+  12%      { transform: translateY(10px)  scale(1.0); opacity: 1; }
+  20%      { transform: translateY(0px)   scale(1.0) rotate(-5deg); }
+  35%      { transform: translateY(0px)   scale(1.0) rotate(5deg); }
+  50%      { transform: translateY(0px)   scale(1.0) rotate(-3deg); }
+  62%      { transform: translateY(0px)   scale(1.0) rotate(0deg); }
+  75%      { transform: translateY(14px)  scale(0.95); opacity: 1; }
+  88%      { transform: translateY(60px)  scale(0.8); opacity: 0; }
+}
+
+/* Spin: chases its own tail */
+.garden-cat-spin {
+  animation: catSpinTail ease-in-out infinite;
+  transform-origin: center center;
+}
+@keyframes catSpinTail {
+  0%,100% { transform: rotate(0deg) scale(1); }
+  25%      { transform: rotate(180deg) scale(1.05); }
+  50%      { transform: rotate(360deg) scale(1); }
+  75%      { transform: rotate(540deg) scale(1.05); }
+}
+
+/* Chase: runs with a bouncy wavy stride */
+.garden-cat-chase {
+  animation: catChaseButterfly ease-in-out infinite;
+}
+@keyframes catChaseButterfly {
+  0%   { transform: translateX(-60px) translateY(0) scaleX(1); opacity: 0; }
+  6%   { opacity: 1; }
+  20%  { transform: translateX(15vw)  translateY(-12px) scaleX(1); }
+  40%  { transform: translateX(32vw)  translateY(8px)   scaleX(1); }
+  60%  { transform: translateX(52vw)  translateY(-10px) scaleX(1); }
+  80%  { transform: translateX(75vw)  translateY(6px)   scaleX(1); }
+  94%  { transform: translateX(108vw) translateY(0)     scaleX(1); opacity: 1; }
+  95%  { opacity: 0; transform: translateX(108vw) scaleX(1); }
+  96%  { transform: translateX(-60px) scaleX(1); opacity: 0; }
+  100% { transform: translateX(-60px) scaleX(1); opacity: 0; }
+}
+
+/* ── Butterflies ── */
+.garden-butterfly {
+  position: absolute;
+  pointer-events: none;
+  animation: butterflyDrift ease-in-out infinite;
+  will-change: transform;
+  z-index: 1;
+}
+@keyframes butterflyDrift {
+  0%   { transform: translateX(-50px) translateY(0) scaleX(1); opacity: 0; }
+  5%   { opacity: 0.9; }
+  25%  { transform: translateX(20vw) translateY(-14px) scaleX(1); }
+  50%  { transform: translateX(50vw) translateY(10px)  scaleX(1); }
+  75%  { transform: translateX(78vw) translateY(-8px)  scaleX(1); }
+  94%  { transform: translateX(108vw) translateY(0) scaleX(1); opacity: 0.9; }
+  95%  { opacity: 0; transform: translateX(108vw) scaleX(1); }
+  100% { transform: translateX(-50px) scaleX(1); opacity: 0; }
+}
+.garden-butterfly svg {
+  display: block;
+  animation: butterflyFlap 0.22s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+@keyframes butterflyFlap {
+  from { transform: scaleY(1); }
+  to   { transform: scaleY(0.45); }
+}
+
+/* ── Decorative grass border between garden and hero ── */
+.garden-grass-border {
+  position: absolute;
+  left: 0; right: 0;
+  bottom: 0;
+  height: 42%;
+  pointer-events: none; z-index: 1;
+  background: transparent;
+}
+.garden-grass-border::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 24px;
+  background:
+    repeating-linear-gradient(90deg,
+      #3d8c28 0px, #3d8c28 3px,
+      #5aaa38 3px, #5aaa38 6px,
+      transparent 6px, transparent 12px
+    ),
+    repeating-linear-gradient(90deg,
+      #4ea030 1px, #4ea030 4px,
+      transparent 4px, transparent 20px
+    );
+  opacity: 0.7;
+  animation: grassGentleSway 3.5s ease-in-out infinite alternate;
+}
+@keyframes grassGentleSway {
+  from { transform: skewX(0deg);   background-position-x: 0px, 0px; }
+  to   { transform: skewX(2deg);   background-position-x: 4px, 2px; }
+}
+
+/* ── Hero: sits at the bottom, slides up from grass ── */
+#intro-overlay .intro-hero {
+  position: relative; z-index: 3;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 0 !important;
+  padding: 22px 28px 36px !important;
+  width: 100%;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(200,240,180,0.22) 0%, rgba(255,255,255,0) 32px) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin-top: auto !important;
+}
+
+/* ── Logo: floats with gentle garden lift ── */
+#intro-overlay .intro-logo-img {
+  width: 148px !important;
+  height: 148px !important;
+  object-fit: contain !important;
+  display: block !important;
+  margin: 0 auto !important;
+  border-radius: 32px !important;
+  filter:
+    drop-shadow(0 14px 32px rgba(40,100,20,0.38))
+    drop-shadow(0 4px 10px rgba(0,0,0,0.14)) !important;
+  animation: gardenLogoFloat 5s ease-in-out infinite alternate !important;
+}
+@keyframes gardenLogoFloat {
+  from { transform: translateY(0px);   filter: drop-shadow(0 14px 32px rgba(40,100,20,0.38)) drop-shadow(0 4px 10px rgba(0,0,0,0.14)); }
+  to   { transform: translateY(-10px); filter: drop-shadow(0 24px 44px rgba(40,100,20,0.22)) drop-shadow(0 8px 18px rgba(0,0,0,0.09)); }
+}
+
+/* ── Title: rich forest green on the grass ── */
+#intro-overlay .intro-title {
+  font-family: 'Fredoka One', cursive;
+  font-size: 44px !important;
+  line-height: 1 !important;
+  letter-spacing: 1px !important;
+  color: #fff !important;
+  text-shadow:
+    0 2px 0 rgba(30,90,20,0.35),
+    0 5px 20px rgba(20,80,10,0.28) !important;
+  margin: 0 0 6px !important;
+}
+
+/* ── Tagline ── */
+#intro-overlay .intro-tagline {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  font-style: italic !important;
+  color: rgba(255,255,255,0.85) !important;
+  text-shadow: 0 1px 6px rgba(20,80,10,0.25) !important;
+  margin: 0 !important;
+}
+
+/* ── Pills: frosted glass on garden ── */
+#intro-overlay .intro-pill {
+  background: rgba(255,255,255,0.22) !important;
+  border: 1.5px solid rgba(255,255,255,0.42) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+#intro-overlay .intro-pill-label {
+  color: #fff !important;
+  font-weight: 800 !important;
+}
+
+/* ── Stats: glass on garden ── */
+#intro-overlay .intro-stats {
+  background: rgba(255,255,255,0.18) !important;
+  border: 1.5px solid rgba(255,255,255,0.34) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+/* ── Start button: fresh green ── */
+#intro-overlay .intro-start-btn {
+  background: #fff !important;
+  box-shadow:
+    0 8px 0 rgba(30,100,20,0.3),
+    0 12px 32px rgba(0,0,0,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.9) !important;
+}
+#intro-overlay .intro-start-btn:active {
+  transform: translateY(5px) !important;
+  box-shadow:
+    0 3px 0 rgba(30,100,20,0.3),
+    0 4px 12px rgba(0,0,0,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.9) !important;
+}
+#intro-overlay .intro-btn-text {
+  color: #2d7a18 !important;
+}
+#intro-overlay .intro-btn-shimmer {
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(120,220,60,0.4) 50%,
+    transparent 65%
+  ) !important;
+}
+
+/* ── Logo reveal on entry ── */
+#intro-overlay .intro-logo-wrap {
+  animation: gardenLogoReveal 0.75s cubic-bezier(0.22,1,0.36,1) both;
+  margin-bottom: 10px;
+}
+@keyframes gardenLogoReveal {
+  from { opacity: 0; transform: scale(0.72) translateY(18px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ── Cat opacity: fully visible ── */
+#intro-overlay .intro-bg-cats .garden-cat { opacity: 1 !important; filter: none !important; }
+
