@@ -1,0 +1,40 @@
+// === AREA DATA ===
+export const AREAS = [
+  {
+    id: "front_yard",
+    name: "Front Yard",
+    emoji: "🌿",
+    description: "An open yard with a gravel path and a few bushes. Any cat might wander in.",
+    unlockCost: 0,
+    baseSlots: 3,
+    maxSlots: 5,
+    upgradeSlotCost: 80,
+    cssClass: "front-yard",
+    // Common and rare cats can appear
+    rarityBonus: {},
+  },
+  {
+    id: "flower_garden",
+    name: "Flower Garden",
+    emoji: "🌸",
+    description: "A fragrant garden bursting with color. Less common cats prefer this tranquil spot.",
+    unlockCost: 120,
+    baseSlots: 4,
+    maxSlots: 6,
+    upgradeSlotCost: 150,
+    cssClass: "flower-garden",
+    rarityBonus: { rare: 15, legendary: 5 },
+  },
+  {
+    id: "wooden_deck",
+    name: "Wooden Deck",
+    emoji: "🪵",
+    description: "A sun-warmed deck at the back. The most distinguished cats choose to appear here.",
+    unlockCost: 300,
+    baseSlots: 4,
+    maxSlots: 7,
+    upgradeSlotCost: 200,
+    cssClass: "wooden-deck",
+    rarityBonus: { rare: 20, legendary: 15 },
+  },
+];
