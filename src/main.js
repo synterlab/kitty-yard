@@ -212,10 +212,11 @@ function render() {
 
 function renderTabBar() {
   return [
-    { id:"yard",       icon:"🏡", label:"Yard"    },
-    { id:"shop",       icon:"🛒", label:"Shop"    },
-    { id:"collection", icon:"📖", label:"Cats"    },
-    { id:"scrapbook",  icon:"📸", label:"Memories"},
+    { id:"yard",       icon:"🏡", label:"Yard" },
+    { id:"shop",       icon:"🛒", label:"Shop" },
+    { id:"collection", icon:"📖", label:"Cats" },
+    { id:"scrapbook",  icon:"📸", label:"Log"  },
+    { id:"profile",    icon:"👤", label:"Me"   },
   ].map(t=>`
     <button class="tab-btn${activeTab===t.id?" active":""}" data-tab="${t.id}">
       <span class="tab-icon">${t.icon}</span>
@@ -240,9 +241,10 @@ function attachTabEvents() {
 }
 
 function attachTabContent() {
-  if (activeTab==="yard")       attachYardEvents();
-  else if (activeTab==="shop")  attachShopEvents();
+  if (activeTab==="yard")            attachYardEvents();
+  else if (activeTab==="shop")       attachShopEvents();
   else if (activeTab==="collection") attachCollectionEvents();
+  else if (activeTab==="profile")    attachProfileEvents();
 }
 
 function renderTab() {
@@ -250,6 +252,7 @@ function renderTab() {
   if (activeTab==="shop")       return renderShop();
   if (activeTab==="collection") return renderCollection();
   if (activeTab==="scrapbook")  return renderScrapbook();
+  if (activeTab==="profile")    return renderProfile();
   return "";
 }
 
@@ -633,10 +636,7 @@ function renderShop() {
       <span class="wib-text">${currentWeather.desc}</span>
     </div>
     <div class="shop-items">${shopHtml}</div>
-    <div class="settings-area">
-      <p class="danger-label">⚠️ Danger Zone</p>
-      <button class="reset-btn" id="reset-btn">Reset All Progress</button>
-    </div>`;
+  `;
 }
 
 function attachShopEvents() {
@@ -653,14 +653,6 @@ function attachShopEvents() {
       const item = ITEMS.find(it => it.id === itemId);
       showToast(item.emoji, "Purchased!", `You got ${item.name}! Place it in the Yard. 🌱`);
     });
-  });
-  document.getElementById("reset-btn")?.addEventListener("click", () => {
-    if (confirm("Reset all your progress? This cannot be undone.")) {
-      clearVisitTimers();
-      state = resetState();
-      activeVisitors = {};
-      render();
-    }
   });
 }
 
@@ -939,6 +931,127 @@ function showBottomSheet(html, onReady=null) {
   if (onReady) onReady();
 }
 function closeSheet() { if (sheetEl) { sheetEl.remove(); sheetEl = null; } }
+
+
+
+// ══════════════════════════════════════
+// PROFILE / DASHBOARD VIEW
+// ══════════════════════════════════════
+function renderProfile() {
+  const level      = getGardenLevel();
+  const lvEmoji    = getGardenLevelEmoji(level);
+  const totalVisits= Object.values(state.discoveredCats).reduce((s,v)=>s+v,0);
+  const foundCats  = Object.keys(state.discoveredCats).length;
+  const totalCoins = state.gallery.reduce((s,e)=>s+(e.gift||0),0);
+  const streak     = state.loginStreak || 0;
+  const name       = state.playerName || "";
+  const xpNow      = totalVisits % 8;
+  const xpPct      = Math.round((xpNow / 8) * 100);
+
+  const commonCats  = CATS.filter(c=>c.rarity==="common");
+  const rareCats    = CATS.filter(c=>c.rarity==="rare");
+  const legendCats  = CATS.filter(c=>c.rarity==="legendary");
+  const cFound  = c => !!state.discoveredCats[c.id];
+  const cf = commonCats.filter(cFound).length;
+  const rf = rareCats.filter(cFound).length;
+  const lf = legendCats.filter(cFound).length;
+
+  const fireEmoji = streak >= 7 ? "🔥🔥🔥" : streak >= 3 ? "🔥🔥" : streak >= 1 ? "🔥" : "—";
+
+  return `
+    <div class="profile-view">
+      <div class="view-header">👤 My Profile</div>
+
+      <div class="profile-card">
+        <div class="profile-avatar-wrap">
+          <div class="profile-avatar">${lvEmoji}</div>
+          <div class="profile-lv-tag">${lvEmoji} Lv.${level}</div>
+        </div>
+        <div class="profile-name-block">
+          <label class="profile-name-label">Garden Name</label>
+          <input class="profile-name-input" id="profile-name-input"
+            type="text" maxlength="24"
+            placeholder="Tap to set your name…"
+            value="${name}" />
+        </div>
+      </div>
+
+      <div class="profile-xp-row">
+        <span class="profile-xp-label">XP to next level</span>
+        <div class="profile-xp-bar-bg">
+          <div class="profile-xp-fill" style="width:${xpPct}%"></div>
+        </div>
+        <span class="profile-xp-pct">${xpPct}%</span>
+      </div>
+
+      <div class="profile-stats-grid">
+        <div class="pstat-card">
+          <div class="pstat-icon">🐱</div>
+          <div class="pstat-val">${foundCats}<span class="pstat-denom">/${CATS.length}</span></div>
+          <div class="pstat-lbl">Cats Found</div>
+        </div>
+        <div class="pstat-card">
+          <div class="pstat-icon">🎯</div>
+          <div class="pstat-val">${totalVisits}</div>
+          <div class="pstat-lbl">Total Visits</div>
+        </div>
+        <div class="pstat-card">
+          <div class="pstat-icon">🪙</div>
+          <div class="pstat-val">${totalCoins}</div>
+          <div class="pstat-lbl">Coins Earned</div>
+        </div>
+        <div class="pstat-card">
+          <div class="pstat-icon">${streak >= 1 ? "🔥" : "💤"}</div>
+          <div class="pstat-val">${streak}<span class="pstat-denom"> days</span></div>
+          <div class="pstat-lbl">Login Streak</div>
+        </div>
+      </div>
+
+      <div class="profile-section-title">🏆 Collection Progress</div>
+      <div class="profile-coll-bars">
+        <div class="pcb-row">
+          <span class="pcb-label">🐱 Common</span>
+          <div class="pcb-bar"><div class="pcb-fill pcb-common" style="width:${Math.round(cf/commonCats.length*100)}%"></div></div>
+          <span class="pcb-count">${cf}/${commonCats.length}</span>
+        </div>
+        <div class="pcb-row">
+          <span class="pcb-label">💎 Rare</span>
+          <div class="pcb-bar"><div class="pcb-fill pcb-rare" style="width:${Math.round(rf/rareCats.length*100)}%"></div></div>
+          <span class="pcb-count">${rf}/${rareCats.length}</span>
+        </div>
+        <div class="pcb-row">
+          <span class="pcb-label">✨ Legendary</span>
+          <div class="pcb-bar"><div class="pcb-fill pcb-legend" style="width:${Math.round(lf/legendCats.length*100)}%"></div></div>
+          <span class="pcb-count">${lf}/${legendCats.length}</span>
+        </div>
+      </div>
+
+      <div class="profile-section-title">⚙️ Settings</div>
+      <div class="profile-danger-zone">
+        <p class="profile-danger-hint">Resetting will erase all cats, coins, and progress permanently.</p>
+        <button class="reset-game-btn" id="reset-btn">🗑️ Reset All Progress</button>
+      </div>
+    </div>`;
+}
+
+function attachProfileEvents() {
+  const nameInput = document.getElementById("profile-name-input");
+  if (nameInput) {
+    nameInput.addEventListener("input", e => {
+      state.playerName = e.target.value;
+      saveState(state);
+    });
+  }
+  document.getElementById("reset-btn")?.addEventListener("click", () => {
+    if (confirm("Reset all your progress? This cannot be undone.")) {
+      clearVisitTimers();
+      state = resetState();
+      activeVisitors = {};
+      activeTab = "yard";
+      render();
+    }
+  });
+}
 
 // ══════════════════════════════════════
 // BOOT
