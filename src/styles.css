@@ -1356,3 +1356,112 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:#e8d8c0;color:v
 
 /* ── Synterlab footer ── */
 .synterlab-footer strong { color: #8b5e2c; }
+
+/* ═══════════════════════════════════════
+   INTRO REDESIGN v3 — Logo golden sky
+   ═══════════════════════════════════════ */
+
+/* Sky: match logo background exactly */
+.intro-bg {
+  background: linear-gradient(180deg,
+    #ffd84a 0%,
+    #f5a820 45%,
+    #e08010 100%) !important;
+}
+
+/* Cat parade: tighter strip */
+.cat-parade {
+  height: 68px !important;
+  background: none !important;
+  flex-shrink: 0;
+}
+
+/* Hero: logo floating in the golden sky */
+.intro-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px 20px 18px;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+/* Logo: floating in sky — drop-shadow follows content shape */
+.intro-logo-img {
+  width: 196px !important;
+  height: 196px !important;
+  object-fit: contain !important;
+  display: block !important;
+  border-radius: 0 !important;
+  margin: 0 auto 12px !important;
+  filter: drop-shadow(0 10px 28px rgba(140,70,0,0.30)) !important;
+  animation: logoFloat 4s ease-in-out infinite alternate !important;
+}
+
+/* Tagline: on golden sky, dark brown */
+.intro-tagline {
+  font-size: 14px !important;
+  color: #3d2010 !important;
+  font-weight: 700 !important;
+  font-style: italic !important;
+  text-align: center !important;
+  margin: 0 !important;
+  text-shadow: 0 1px 3px rgba(255,230,160,0.55);
+}
+
+/* Card: warm cream sheet sliding from bottom */
+.intro-card {
+  background: linear-gradient(180deg, #fffdf4 0%, #ffffff 80px) !important;
+  border-radius: 28px 28px 0 0 !important;
+  padding: 20px 18px 48px !important;
+  box-shadow: 0 -6px 32px rgba(140,80,0,0.16) !important;
+  flex: 1;
+}
+
+/* Pills: clean 2x2 grid */
+.intro-pills-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.intro-pills-grid .feature-pill {
+  justify-content: center;
+  text-align: center;
+  padding: 10px 6px;
+  font-size: 13px;
+}
+
+/* Hide old Synterlab elements */
+.studio-badge,
+.synterlab-footer {
+  display: none !important;
+}
+
+/* Tabs: tighter */
+.intro-tabs {
+  margin-bottom: 14px !important;
+}
+
+/* Start button: full-width wooden sign look */
+.intro-start-btn {
+  margin-top: 18px !important;
+  margin-bottom: 0 !important;
+}
+
+/* Returning banner: no extra margin */
+.returning-banner {
+  margin-bottom: 12px;
+}
+
+/* Stars: softer in golden sky */
+.intro-stars {
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.7) 1.2px, transparent 1.2px),
+    radial-gradient(circle, rgba(255,255,255,0.5) 0.8px, transparent 0.8px),
+    radial-gradient(circle, rgba(255,255,255,0.4) 0.8px, transparent 0.8px) !important;
+  background-size: 120px 100px, 80px 75px, 60px 58px !important;
+  animation: starsTwinkle 6s ease-in-out infinite alternate !important;
+}
+
