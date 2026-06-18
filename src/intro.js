@@ -18,6 +18,9 @@ export function showIntroScreen(onStart) {
   overlay.id = "intro-overlay";
   overlay.innerHTML = `
     <div class="intro-bg">
+      <!-- Starfield layer -->
+      <div class="intro-stars" aria-hidden="true"></div>
+
       <!-- Animated cat parade -->
       <div class="cat-parade" aria-hidden="true">
         ${WALKING_CATS.map((id, i) => `
@@ -31,9 +34,12 @@ export function showIntroScreen(onStart) {
         <div class="intro-logo">
           <div class="intro-logo-paw">🐾</div>
           <div class="intro-logo-text">
-            <span class="logo-kitty">Kitty</span><span class="logo-yard">Yard</span>
+            <span class="logo-kitty">Kitty</span><span class="logo-yard">Yard</span><span class="version-badge">v2</span>
           </div>
           <div class="intro-tagline">A peaceful place where strays come to rest</div>
+          <div class="studio-badge">
+            <span class="studio-badge-dot"></span>Synterlab
+          </div>
         </div>
 
         <!-- Cat preview row -->
@@ -125,6 +131,10 @@ export function showIntroScreen(onStart) {
         <button class="intro-start-btn" id="intro-start">
           Start Exploring 🐾
         </button>
+
+        <div class="synterlab-footer">
+          A free game by <strong>Synterlab</strong> · Play it anywhere, no downloads
+        </div>
       </div>
     </div>
   `;
