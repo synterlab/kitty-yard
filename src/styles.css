@@ -3395,3 +3395,18 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:#e8d8c0;color:v
   background: linear-gradient(180deg, #f0fae8 0%, #e8f8f0 50%, #f4fae8 100%) !important;
 }
 
+
+/* ── Scroll fix: prevent horizontal containers from blocking vertical scroll ── */
+.main-content {
+  overflow-y: scroll !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-y !important;
+}
+.visiting-cats {
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+}
+.area-switcher {
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+}
