@@ -770,3 +770,301 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:#e8d8c0;color:v
   background: linear-gradient(135deg, #f3e5f5, #e0c8ff);
   box-shadow: 0 1px 6px rgba(155,93,229,0.25);
 }
+
+/* ═══════════════════════════════════════
+   GAME STUDIO POLISH v3 — Full Upgrade
+   ═══════════════════════════════════════ */
+
+/* ── Tab content fade-in ── */
+@keyframes tabFadeIn {
+  from { opacity:0; transform:translateY(10px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.tab-fade-in { animation: tabFadeIn 0.22s ease forwards; }
+
+/* ── Area scenes: richer gradients ── */
+.area-scene.front-yard {
+  background: linear-gradient(150deg,#d4f0a0 0%,#a8e070 50%,#7cc048 100%);
+}
+.area-scene.flower-garden {
+  background: linear-gradient(150deg,#ffe0ee 0%,#ffc0d8 50%,#ff90b8 100%);
+}
+.area-scene.wooden-deck {
+  background: linear-gradient(150deg,#fff0c8 0%,#f8d880 50%,#d8a848 100%);
+}
+
+/* ── Animated grass strip at bottom of front yard ── */
+.area-scene.front-yard {
+  padding-bottom: 28px;
+}
+.area-scene.front-yard::before {
+  content:'';
+  position:absolute;
+  bottom:0; left:0; right:0; height:28px;
+  background:
+    repeating-linear-gradient(90deg,
+      #5aa830 0px, #5aa830 4px,
+      #7acc48 4px, #7acc48 7px,
+      transparent 7px, transparent 14px
+    ),
+    repeating-linear-gradient(90deg,
+      #6abe38 2px, #6abe38 5px,
+      transparent 5px, transparent 18px
+    );
+  opacity:0.55;
+  border-radius:0 0 var(--radius) var(--radius);
+  animation:grassSway 4s ease-in-out infinite alternate;
+}
+@keyframes grassSway {
+  from { transform:skewX(0deg); }
+  to   { transform:skewX(1.5deg); }
+}
+
+/* ── Flower dots at bottom of flower garden ── */
+.area-scene.flower-garden::before {
+  content:'';
+  position:absolute;
+  bottom:0; left:0; right:0; height:22px;
+  background:
+    radial-gradient(circle, #ff60a0 3px, transparent 3px),
+    radial-gradient(circle, #ff90c0 2.5px, transparent 2.5px),
+    radial-gradient(circle, #ff4888 2px, transparent 2px);
+  background-size: 28px 22px, 20px 16px, 16px 12px;
+  background-position: 4px 8px, 14px 5px, 22px 10px;
+  opacity:0.6;
+  border-radius:0 0 var(--radius) var(--radius);
+}
+
+/* ── Waiting dots ── */
+.waiting-dots span {
+  display:inline-block;
+  animation:dotBounce 1.5s ease-in-out infinite;
+}
+.waiting-dots span:nth-child(1) { animation-delay:0s; }
+.waiting-dots span:nth-child(2) { animation-delay:0.18s; }
+.waiting-dots span:nth-child(3) { animation-delay:0.36s; }
+@keyframes dotBounce {
+  0%,80%,100% { transform:translateY(0); opacity:0.4; }
+  40%          { transform:translateY(-5px); opacity:1; }
+}
+
+/* ── Cat visitor: rarity glow ── */
+.cat-visitor.rarity-rare .cat-visitor-sprite {
+  box-shadow:
+    0 4px 20px rgba(76,201,240,0.55),
+    0 0 0 2.5px rgba(76,201,240,0.35);
+}
+.cat-visitor.rarity-rare .cat-visitor-name {
+  background:linear-gradient(135deg,#e3f2fd,#c8e8ff);
+  color:var(--blue-dark);
+}
+.cat-visitor.rarity-legendary .cat-visitor-sprite {
+  box-shadow:
+    0 4px 28px rgba(199,125,255,0.65),
+    0 0 0 3px rgba(199,125,255,0.45);
+  animation:legendaryVisitorPulse 2s ease-in-out infinite;
+}
+@keyframes legendaryVisitorPulse {
+  0%,100% { box-shadow:0 4px 28px rgba(199,125,255,0.65), 0 0 0 3px rgba(199,125,255,0.45); }
+  50%      { box-shadow:0 6px 44px rgba(199,125,255,0.9), 0 0 0 4px rgba(199,125,255,0.7); }
+}
+.cat-visitor.rarity-legendary .cat-visitor-name {
+  background:linear-gradient(135deg,#f3e5f5,#e0c8ff);
+  color:var(--purple-dark);
+  font-weight:900;
+}
+
+/* ── Discovery flash ── */
+.discovery-flash {
+  position:absolute; inset:0;
+  background:radial-gradient(circle, rgba(255,220,50,0.7) 0%, rgba(255,150,0,0.3) 50%, transparent 80%);
+  border-radius:var(--radius);
+  pointer-events:none;
+  z-index:20;
+  animation:discoveryFlash 1.3s ease forwards;
+}
+@keyframes discoveryFlash {
+  0%   { opacity:0; transform:scale(0.6); }
+  25%  { opacity:1; transform:scale(1.03); }
+  100% { opacity:0; transform:scale(1.15); }
+}
+
+/* ── Notification: rarity colors ── */
+.notification.rarity-rare {
+  border-left:4px solid var(--blue);
+  background:linear-gradient(135deg,#fff,#f0faff);
+  box-shadow:0 10px 40px rgba(76,201,240,0.22),0 2px 0 rgba(255,255,255,0.6) inset;
+}
+.notification.rarity-legendary {
+  border-left:4px solid var(--purple);
+  background:linear-gradient(135deg,#fff,#faf5ff);
+  box-shadow:0 10px 48px rgba(199,125,255,0.28),0 2px 0 rgba(255,255,255,0.6) inset;
+}
+.notification.rarity-legendary .notif-title { color:var(--purple-dark); font-size:16px; }
+
+/* ── Collection progress bar ── */
+.collection-progress {
+  margin:0 16px 14px;
+  background:var(--tan);
+  border-radius:10px; height:10px;
+  overflow:hidden;
+  box-shadow:inset 0 2px 4px rgba(0,0,0,0.08);
+}
+.collection-progress-fill {
+  height:100%; border-radius:10px;
+  background:linear-gradient(90deg,var(--green),var(--blue-dark));
+  transition:width 1s cubic-bezier(0.34,1.2,0.64,1);
+  box-shadow:0 2px 8px rgba(76,201,240,0.45);
+}
+
+/* ── Cat cards: rarity borders ── */
+.cat-card.legendary:not(.locked) {
+  border:2px solid rgba(199,125,255,0.45);
+  box-shadow:0 4px 20px rgba(199,125,255,0.2);
+}
+.cat-card.rare:not(.locked) {
+  border:2px solid rgba(76,201,240,0.38);
+  box-shadow:0 4px 16px rgba(76,201,240,0.15);
+}
+
+/* ── Shop item: hover lift ── */
+@media (hover:hover) {
+  .shop-item:hover {
+    transform:translateY(-3px);
+    box-shadow:0 10px 28px var(--shadow);
+  }
+}
+.shop-item { transition:transform 0.15s ease, box-shadow 0.15s ease; }
+
+/* ── Upgrade btn: glow when affordable ── */
+.upgrade-btn:not(:disabled) {
+  animation:upgradeGlow 2.5s ease-in-out infinite alternate;
+}
+@keyframes upgradeGlow {
+  from { box-shadow:0 4px 14px rgba(106,153,78,0.35); }
+  to   { box-shadow:0 8px 28px rgba(106,153,78,0.65); }
+}
+
+/* ── Unlock btn: pulse when affordable ── */
+.unlock-btn:not(:disabled) {
+  animation:unlockPulse 2s ease-in-out infinite alternate;
+}
+@keyframes unlockPulse {
+  from { box-shadow:0 4px 16px rgba(243,167,18,0.4); }
+  to   { box-shadow:0 8px 32px rgba(243,167,18,0.75); }
+}
+
+/* ── Coin bump: more satisfying ── */
+.coin-amount.bump {
+  animation:coinBump 0.38s cubic-bezier(0.34,1.56,0.64,1) !important;
+}
+@keyframes coinBump {
+  0%   { transform:scale(1); }
+  45%  { transform:scale(1.55) rotate(-6deg); color:#ff9000; }
+  100% { transform:scale(1); }
+}
+
+/* ── Tab icon: bouncy active ── */
+.tab-btn .tab-icon {
+  transition:transform 0.22s cubic-bezier(0.34,1.56,0.64,1);
+}
+.tab-btn.active .tab-icon {
+  transform:scale(1.28);
+  filter:drop-shadow(0 2px 6px rgba(243,167,18,0.5));
+}
+
+/* ── Topbar: Synterlab micro watermark ── */
+.topbar-synterlab {
+  font-size:8px; font-weight:700;
+  color:rgba(93,62,26,0.42);
+  letter-spacing:0.6px;
+  text-transform:uppercase; line-height:1;
+  margin-top:1px;
+}
+
+/* ── Scrollbar ── */
+.main-content::-webkit-scrollbar { width:3px; }
+.main-content::-webkit-scrollbar-track { background:transparent; }
+.main-content::-webkit-scrollbar-thumb { background:var(--tan); border-radius:4px; }
+
+/* ── Area switcher: fade edges ── */
+.area-switcher {
+  -webkit-mask-image:linear-gradient(to right,transparent,black 18px,black calc(100% - 18px),transparent);
+  mask-image:linear-gradient(to right,transparent,black 18px,black calc(100% - 18px),transparent);
+}
+
+/* ── Slot placed: spring pop ── */
+.item-slot.just-placed {
+  animation:slotPop 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes slotPop {
+  0%   { transform:scale(0.8); }
+  60%  { transform:scale(1.12); }
+  100% { transform:scale(1); }
+}
+
+/* ── Empty state paw bounce ── */
+.empty-icon {
+  animation:emptyBounce 2.5s ease-in-out infinite;
+}
+@keyframes emptyBounce {
+  0%,100% { transform:translateY(0) rotate(0deg); }
+  35%      { transform:translateY(-10px) rotate(-10deg); }
+  65%      { transform:translateY(-5px) rotate(6deg); }
+}
+
+/* ── Scrapbook: hover slide ── */
+@media (hover:hover) {
+  .scrapbook-entry:hover {
+    transform:translateX(4px);
+    box-shadow:0 6px 20px var(--shadow);
+    transition:all 0.15s ease;
+  }
+}
+
+/* ── Intro: feature pills ── */
+.intro-feature-pills {
+  display:flex; gap:8px;
+  justify-content:center; flex-wrap:wrap;
+  margin:14px 0 2px;
+}
+.feature-pill {
+  display:inline-flex; align-items:center; gap:5px;
+  background:var(--cream);
+  border:1.5px solid var(--tan);
+  border-radius:20px; padding:5px 12px;
+  font-size:11px; font-weight:800;
+  color:var(--text);
+  box-shadow:0 1px 4px rgba(74,55,40,0.07);
+}
+
+/* ── Intro cat-row: slight lift on each chip ── */
+.intro-cat-chip {
+  transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+}
+.intro-cat-chip:hover { transform:scale(1.1) translateY(-3px); }
+
+/* ── Area locked: stronger blur ── */
+.area-locked-overlay {
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+
+/* ── Gift pop: more satisfying ── */
+.gift-pop {
+  font-size:24px;
+  animation:giftFloat 1.8s ease forwards;
+  text-shadow:0 2px 12px rgba(0,0,0,0.18);
+}
+@keyframes giftFloat {
+  from { opacity:1; transform:translateY(0) scale(1); }
+  40%  { opacity:1; transform:translateY(-24px) scale(1.4) rotate(-5deg); }
+  to   { opacity:0; transform:translateY(-70px) scale(0.8); }
+}
+
+/* ── Bottom sheet handle: wider ── */
+.sheet-handle {
+  width:52px; height:5px;
+  background:var(--tan);
+  border-radius:3px; margin:14px auto 18px;
+}
