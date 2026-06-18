@@ -43,7 +43,10 @@ function render() {
     <div class="topbar">
       <div class="topbar-logo">
         <span class="topbar-paw">🐾</span>
-        <div class="topbar-title">Kitty<span>Yard</span></div>
+        <div>
+          <div class="topbar-title">Kitty<span>Yard</span></div>
+          <div class="topbar-synterlab">by Synterlab</div>
+        </div>
       </div>
       <div class="coin-display">
         <span class="coin-icon">🪙</span>
@@ -74,7 +77,11 @@ function attachTabEvents() {
   document.querySelectorAll(".tab-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       activeTab = btn.dataset.tab;
-      document.getElementById("main-content").innerHTML = renderTab();
+      const mc = document.getElementById("main-content");
+      mc.innerHTML = renderTab();
+      mc.classList.remove("tab-fade-in");
+      void mc.offsetWidth;
+      mc.classList.add("tab-fade-in");
       document.querySelectorAll(".tab-btn").forEach(b=>b.classList.toggle("active",b.dataset.tab===activeTab));
       attachTabContent();
     });
@@ -136,11 +143,11 @@ function renderAreaScene(area) {
 
   const visitorsHtml = visitors.length>0
     ? visitors.map(v=>`
-        <div class="cat-visitor" data-cat="${v.cat.id}">
+        <div class="cat-visitor rarity-${v.cat.rarity}" data-cat="${v.cat.id}">
           <div class="cat-visitor-sprite">${generateCatSVG(v.cat.id, 64)}</div>
           <div class="cat-visitor-name">${v.cat.name}</div>
         </div>`).join("")
-    : `<div class="no-cats-msg">Waiting for visitors…</div>`;
+    : `<div class="no-cats-msg waiting-dots">Waiting for visitors<span>.</span><span>.</span><span>.</span></div>`;
 
   return `
     <div class="area-scene ${area.cssClass}" id="scene-${area.id}">
@@ -374,8 +381,12 @@ function renderCollection() {
         <div class="cat-card-visits">${disc?`${visits} visit${visits!==1?"s":""}`:""}</div>
       </div>`;
   }).join("");
+  const pct = Math.round((found / total) * 100);
   return `
     <div class="view-header">📖 Cats <span class="view-header-sub">${found}/${total} found</span></div>
+    <div class="collection-progress">
+      <div class="collection-progress-fill" style="width:${pct}%"></div>
+    </div>
     <div class="collection-grid">${cards}</div>`;
 }
 
@@ -442,10 +453,24 @@ function spawnVisitor(areaId, cat) {
   const leaveTimer = setTimeout(()=>catLeaves(areaId,cat,coins), leaveMs);
   activeVisitors[areaId].push({cat,leaveTimer});
 
+  const isFirstDiscovery = !state.discoveredCats[cat.id];
   state.discoveredCats[cat.id] = (state.discoveredCats[cat.id]||0)+1;
   saveState(state);
 
-  showToast(generateCatSVG(cat.id,44), `${cat.name} arrived!`, `Visiting ${AREAS.find(a=>a.id===areaId)?.name}`);
+  const areaName = AREAS.find(a=>a.id===areaId)?.name;
+  if (isFirstDiscovery) {
+    showToast(generateCatSVG(cat.id,44), `✨ New cat discovered!`, `${cat.name} — ${cat.rarity}`, cat.rarity);
+    const scene = document.getElementById(`scene-${areaId}`);
+    if (scene) {
+      const flash = document.createElement("div");
+      flash.className = "discovery-flash";
+      scene.appendChild(flash);
+      setTimeout(() => flash.remove(), 1300);
+    }
+  } else {
+    const rar = cat.rarity === "common" ? "" : cat.rarity;
+    showToast(generateCatSVG(cat.id,44), `${cat.name} arrived!`, `Visiting ${areaName}`, rar);
+  }
   refreshVisitorUI(areaId);
 }
 
@@ -469,11 +494,11 @@ function refreshVisitorUI(areaId) {
   const visitors = activeVisitors[areaId]||[];
   el.innerHTML = visitors.length>0
     ? visitors.map(v=>`
-        <div class="cat-visitor" data-cat="${v.cat.id}">
+        <div class="cat-visitor rarity-${v.cat.rarity}" data-cat="${v.cat.id}">
           <div class="cat-visitor-sprite">${generateCatSVG(v.cat.id,64)}</div>
           <div class="cat-visitor-name">${v.cat.name}</div>
         </div>`).join("")
-    : `<div class="no-cats-msg">Waiting for visitors…</div>`;
+    : `<div class="no-cats-msg waiting-dots">Waiting for visitors<span>.</span><span>.</span><span>.</span></div>`;
   el.querySelectorAll(".cat-visitor").forEach(e=>e.addEventListener("click",()=>openCatSheet(e.dataset.cat)));
 }
 
@@ -488,12 +513,12 @@ function updateCoinDisplay(bump=false) {
 }
 
 let toastTimeout=null;
-function showToast(svgOrIcon, title, sub) {
+function showToast(svgOrIcon, title, sub, rarity="") {
   document.querySelector(".notification")?.remove();
   if (toastTimeout) clearTimeout(toastTimeout);
   const isSVG = typeof svgOrIcon==="string" && svgOrIcon.includes("<svg");
   const el = document.createElement("div");
-  el.className="notification";
+  el.className=`notification${rarity?" rarity-"+rarity:""}`;
   el.innerHTML=`
     ${isSVG
       ? `<div class="notif-cat-svg">${svgOrIcon}</div>`
