@@ -24,6 +24,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Inject cache-busting version into index.html
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          sed -i "s|src/styles.css"|src/styles.css?v=${SHORT_SHA}"|g" index.html
+          sed -i "s|src/main.js"|src/main.js?v=${SHORT_SHA}"|g" index.html
+          echo "Cache-bust version: ${SHORT_SHA}"
+          grep -E "styles\.css|main\.js" index.html
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
