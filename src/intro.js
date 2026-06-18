@@ -14,42 +14,34 @@ export function markIntroSeen() {
 const WALKING_CATS = ["biscuit","smoky","mochi","pebble","noodle","pudding","duchess","pirate","emperor","aurora"];
 
 export function showIntroScreen(onStart) {
-  // Detect returning player
   const SAVE_KEY = "kittyyard_save_v1";
   let saveData = null;
   try { saveData = JSON.parse(localStorage.getItem(SAVE_KEY)); } catch(e) {}
   const isReturning = saveData && (Object.keys(saveData.discoveredCats||{}).length > 0 || saveData.coins !== 50);
   const catsFound   = isReturning ? Object.keys(saveData.discoveredCats||{}).length : 0;
   const coins       = isReturning ? (saveData.coins||0) : 0;
-  const btnText     = isReturning ? "Continue Playing 🐾" : "Start Exploring 🐾";
+  const btnText     = isReturning ? "Continue Playing" : "Start Exploring";
 
   const overlay = document.createElement("div");
   overlay.id = "intro-overlay";
   overlay.innerHTML = `
     <div class="intro-bg">
-      <!-- Starfield layer -->
       <div class="intro-stars" aria-hidden="true"></div>
 
-      <!-- Animated cat parade -->
       <div class="cat-parade" aria-hidden="true">
         ${WALKING_CATS.map((id, i) => `
-          <div class="parade-cat" style="animation-delay:${i * 0.55}s; top:${10 + ((i%3)*8)}px">
-            ${generateCatSVG(id, 56)}
+          <div class="parade-cat" style="animation-delay:${i * 0.55}s; top:${4 + ((i%3)*7)}px">
+            ${generateCatSVG(id, 50)}
           </div>`).join("")}
+      </div>
+
+      <div class="intro-hero">
+        <img src="logo.png" class="intro-logo-img" alt="Kitty Yard" />
+        <div class="intro-tagline">A peaceful place where strays come to rest</div>
       </div>
 
       <div class="intro-card">
 
-        <!-- Logo -->
-        <div class="intro-logo">
-          <img src="logo.png" class="intro-logo-img" alt="Kitty Yard" />
-          <div class="intro-tagline">A peaceful place where strays come to rest</div>
-          <div class="studio-badge">
-            <span class="studio-badge-dot"></span>Synterlab<span class="version-badge" style="margin-left:8px;vertical-align:middle">v2</span>
-          </div>
-        </div>
-
-        <!-- Returning player banner -->
         ${isReturning ? `
         <div class="returning-banner">
           <div class="returning-banner-row">
@@ -69,39 +61,35 @@ export function showIntroScreen(onStart) {
             </div>
           </div>
         </div>` : `
-        <!-- Feature pills (new players only) -->
-        <div class="intro-feature-pills">
+        <div class="intro-pills-grid">
           <div class="feature-pill">🐾 22 Unique Cats</div>
           <div class="feature-pill">🗺️ 3 Areas</div>
           <div class="feature-pill">⚡ Free to Play</div>
           <div class="feature-pill">📱 Mobile-First</div>
         </div>`}
 
-        <!-- Cat preview row -->
         <div class="intro-cat-row">
           ${["biscuit","duchess","emperor","aurora","phantom"].map(id =>
-            `<div class="intro-cat-chip" title="${id}">
+            `<div class="intro-cat-chip">
               <div class="intro-cat-svg">${generateCatSVG(id, 52)}</div>
             </div>`).join("")}
-          <div class="intro-cat-chip more-chip">+17 more!</div>
+          <div class="intro-cat-chip more-chip">+17<br>more</div>
         </div>
 
-        <!-- Tabs -->
         <div class="intro-tabs">
           <button class="itab active" data-itab="about">About</button>
           <button class="itab" data-itab="howto">How to Play</button>
         </div>
 
-        <!-- About content -->
         <div class="intro-panel" id="ipanel-about">
           <div class="intro-game-desc">
-            Kitty Yard is a cozy idle game where stray cats visit your yard. Place food and toys, watch unique cats wander in, and build your collection — all at your own pace.
+            Kitty Yard is a cozy idle game where stray cats visit your yard. Place food and toys, watch unique cats wander in, and grow your collection at your own pace.
           </div>
           <div class="intro-about-grid">
             <div class="about-point">
               <span class="about-icon">🍱</span>
               <div>
-                <div class="about-title">Place Food & Toys</div>
+                <div class="about-title">Place Food and Toys</div>
                 <div class="about-desc">Set out snacks and playthings in your yard slots to lure curious cats.</div>
               </div>
             </div>
@@ -109,7 +97,7 @@ export function showIntroScreen(onStart) {
               <span class="about-icon">🐾</span>
               <div>
                 <div class="about-title">Cats Arrive on Their Own</div>
-                <div class="about-desc">No tapping needed — visitors wander in based on what you've placed. Rare ones are picky!</div>
+                <div class="about-desc">No tapping needed. Visitors wander in based on what you've placed. Rare ones are picky!</div>
               </div>
             </div>
             <div class="about-point">
@@ -123,7 +111,7 @@ export function showIntroScreen(onStart) {
               <span class="about-icon">📖</span>
               <div>
                 <div class="about-title">Fill Your Collection</div>
-                <div class="about-desc">22 cats across Common, Rare & Legendary tiers. Each has a personality and a secret.</div>
+                <div class="about-desc">22 cats across Common, Rare and Legendary tiers. Each has a personality and a secret.</div>
               </div>
             </div>
             <div class="about-point">
@@ -137,7 +125,7 @@ export function showIntroScreen(onStart) {
               <span class="about-icon">🔓</span>
               <div>
                 <div class="about-title">Unlock New Areas</div>
-                <div class="about-desc">Expand to the Flower Garden and Wooden Deck — where the rarest cats roam.</div>
+                <div class="about-desc">Expand to the Flower Garden and Wooden Deck where the rarest cats roam.</div>
               </div>
             </div>
           </div>
@@ -148,7 +136,6 @@ export function showIntroScreen(onStart) {
           </div>
         </div>
 
-        <!-- How to Play content -->
         <div class="intro-panel hidden" id="ipanel-howto">
           <div class="howto-steps">
             <div class="howto-step">
@@ -169,13 +156,13 @@ export function showIntroScreen(onStart) {
               <div class="step-num">3</div>
               <div class="step-body">
                 <div class="step-title">Wait for visitors 🐱</div>
-                <div class="step-desc">Cats check in every ~30 seconds. Tap a visiting cat to read their story and personality.</div>
+                <div class="step-desc">Cats check in every 30 seconds. Tap a visiting cat to read their story and personality.</div>
               </div>
             </div>
             <div class="howto-step">
               <div class="step-num">4</div>
               <div class="step-body">
-                <div class="step-title">Collect coins & expand 🪙</div>
+                <div class="step-title">Collect coins and expand 🪙</div>
                 <div class="step-desc">Each departing cat leaves Snack Coins. Use them to buy items and unlock new areas.</div>
               </div>
             </div>
@@ -183,34 +170,30 @@ export function showIntroScreen(onStart) {
               <div class="step-num">5</div>
               <div class="step-body">
                 <div class="step-title">Complete your collection 📖</div>
-                <div class="step-desc">Find all 22 cats. Legendary ones need 2+ specific items placed at the same time.</div>
+                <div class="step-desc">Find all 22 cats. Legendary ones need 2 or more specific items placed at the same time.</div>
               </div>
             </div>
           </div>
           <div class="howto-tip">
             <span>💡</span>
-            <div><strong>Pro tip:</strong> The Wooden Deck has the highest chance for Legendary cats — unlock it as soon as possible!</div>
+            <div><strong>Pro tip:</strong> The Wooden Deck has the highest chance for Legendary cats. Unlock it as soon as possible!</div>
           </div>
-          <div class="howto-tip howto-tip-offline" style="margin-top:8px">
+          <div class="howto-tip" style="margin-top:8px">
             <span>🌙</span>
-            <div><strong>Go offline:</strong> Close the tab and come back later — cats keep visiting while you're away!</div>
+            <div><strong>Offline:</strong> Close the tab and come back later. Cats keep visiting while you're away!</div>
           </div>
         </div>
 
         <button class="intro-start-btn" id="intro-start">
-          ${btnText}
+          ${btnText} 🐾
         </button>
 
-        <div class="synterlab-footer">
-          A free game by <strong>Synterlab</strong> · Play it anywhere, no downloads
-        </div>
       </div>
     </div>
   `;
 
   document.getElementById("app").appendChild(overlay);
 
-  // Tab switching
   overlay.querySelectorAll(".itab").forEach(btn => {
     btn.addEventListener("click", () => {
       overlay.querySelectorAll(".itab").forEach(b => b.classList.remove("active"));
@@ -220,7 +203,6 @@ export function showIntroScreen(onStart) {
     });
   });
 
-  // Start button
   document.getElementById("intro-start").addEventListener("click", () => {
     overlay.style.animation = "introFadeOut 0.4s ease forwards";
     setTimeout(() => {
