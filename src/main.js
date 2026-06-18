@@ -560,9 +560,5 @@ function closeSheet() { if(sheetEl){sheetEl.remove();sheetEl=null;} }
 // ══════════════════════════════════════
 document.addEventListener("DOMContentLoaded",()=>{
   handleOfflineVisits();
-  if (!hasSeenIntro()) {
-    showIntroScreen(()=>{ render(); });
-  } else {
-    render();
-  }
+  showIntroScreen(()=>{ render(); });
 });
