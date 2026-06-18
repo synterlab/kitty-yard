@@ -11,7 +11,9 @@ import { showIntroScreen, hasSeenIntro } from "./intro.js";
 // STATE
 // ══════════════════════════════════════
 let state = loadState() || { ...DEFAULT_STATE };
-let activeTab      = "yard";
+// Read tab from URL hash (e.g. #cats, #shop, #me)
+const HASH_TAB_MAP = { yard:"yard", shop:"shop", cats:"collection", log:"scrapbook", me:"profile", collection:"collection", scrapbook:"scrapbook", profile:"profile" };
+let activeTab = HASH_TAB_MAP[location.hash.slice(1)] || "yard";
 let activeAreaId   = "front_yard";
 let visitTimers    = {};
 let activeVisitors = {};
@@ -228,6 +230,9 @@ function attachTabEvents() {
   document.querySelectorAll(".tab-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       activeTab = btn.dataset.tab;
+      // Update URL hash (no page reload, improves shareability)
+      const TAB_HASH_MAP = { yard:"yard", shop:"shop", collection:"cats", scrapbook:"log", profile:"me" };
+      history.replaceState(null, "", "#" + (TAB_HASH_MAP[activeTab] || activeTab));
       const mc = document.getElementById("main-content");
       mc.innerHTML = renderTab();
       mc.classList.remove("tab-fade-in");
