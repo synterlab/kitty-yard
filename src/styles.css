@@ -1174,3 +1174,185 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:#e8d8c0;color:v
 .intro-card {
   padding: 24px 20px 12px;
 }
+
+/* ═══════════════════════════════════════
+   LOGO DESIGN SYSTEM — Cohesive Identity
+   ═══════════════════════════════════════ */
+
+/* ── Intro: logo image hero ── */
+.intro-logo {
+  text-align: center;
+  margin-bottom: 12px;
+}
+.intro-logo-img {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 10px;
+  border-radius: 28px;
+  filter: drop-shadow(0 10px 32px rgba(180,90,0,0.38));
+  animation: logoFloat 4s ease-in-out infinite alternate;
+}
+@keyframes logoFloat {
+  from { transform: translateY(0px);  filter: drop-shadow(0 10px 32px rgba(180,90,0,0.38)); }
+  to   { transform: translateY(-8px); filter: drop-shadow(0 18px 40px rgba(180,90,0,0.28)); }
+}
+
+/* Tagline below logo */
+.intro-logo .intro-tagline {
+  font-size: 14px;
+  color: rgba(93,62,26,0.75);
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-style: italic;
+}
+
+/* ── Topbar: logo image ── */
+.topbar-logo-img {
+  height: 46px;
+  width: 46px;
+  object-fit: contain;
+  border-radius: 12px;
+  display: block;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.18));
+  transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+}
+.topbar-logo-img:active { transform: scale(0.92); }
+
+/* ── Topbar: match logo's warm golden sky ── */
+.topbar {
+  background: linear-gradient(135deg, #ffd84a 0%, #f5a820 45%, #e88010 100%);
+  box-shadow: 0 3px 20px rgba(232,136,16,0.45);
+}
+
+/* ── Intro background: match logo's golden sky ── */
+.intro-bg {
+  background: linear-gradient(165deg, #ffd84a 0%, #f5a820 40%, #e88010 75%, #d07010 100%);
+}
+
+/* ── Intro card: warm tinted top to blend with bg ── */
+.intro-card {
+  background: linear-gradient(180deg, #fffbf0 0%, #ffffff 80px);
+  border-radius: 28px 28px 0 0;
+}
+
+/* ── Wooden sign button style for start btn ── */
+.intro-start-btn {
+  background: linear-gradient(135deg, #e8c070 0%, #d09840 50%, #b87820 100%);
+  color: #3d2010;
+  border: 3px solid #8b5e2c;
+  box-shadow:
+    0 6px 0 #6b3e14,
+    0 10px 24px rgba(0,0,0,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.4);
+  text-shadow: 0 1px 2px rgba(255,255,255,0.25);
+  font-family: 'Fredoka One', cursive;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+  animation: btnWood 3s ease-in-out infinite alternate;
+}
+.intro-start-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #6b3e14, 0 4px 10px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.4);
+  animation: none;
+}
+@keyframes btnWood {
+  from { box-shadow: 0 6px 0 #6b3e14, 0 10px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.4); }
+  to   { box-shadow: 0 6px 0 #6b3e14, 0 14px 36px rgba(200,140,0,0.4), inset 0 1px 0 rgba(255,255,255,0.4); }
+}
+
+/* ── Intro tabs: wooden pill ── */
+.intro-tabs {
+  background: rgba(200,160,90,0.22);
+  border: 1.5px solid rgba(139,94,44,0.25);
+}
+.itab.active {
+  background: linear-gradient(135deg, #e8c870, #d0a040);
+  color: #3d2010;
+  box-shadow: 0 2px 8px rgba(139,94,44,0.25), inset 0 1px 0 rgba(255,255,255,0.4);
+}
+.itab:not(.active) {
+  color: rgba(93,62,26,0.7);
+}
+
+/* ── About points: warm card tint ── */
+.about-point {
+  background: linear-gradient(135deg, #fffbf2, #fff8ea);
+  border: 1.5px solid rgba(200,169,126,0.3);
+}
+
+/* ── Area scene buttons (area switcher): wooden feel ── */
+.area-btn.active {
+  background: linear-gradient(135deg, #f5c840, #e89820);
+  border-color: #c87820;
+  box-shadow: 0 3px 12px rgba(200,120,32,0.38);
+}
+
+/* ── Upgrade/buy buttons: warm gold ── */
+.unlock-btn {
+  background: linear-gradient(135deg, #f5c840, #e89820);
+  color: #3d2010;
+  border: 2px solid #c87820;
+  font-family: 'Fredoka One', cursive;
+}
+.buy-btn {
+  background: linear-gradient(135deg, #f5c840, #e89820);
+  color: #3d2010;
+}
+
+/* ── Coin display: warm tint ── */
+.coin-display {
+  background: rgba(255,252,240,0.9);
+}
+.coin-amount { color: #c07010; }
+
+/* ── Tab bar: active tab warm wood ── */
+.tab-btn.active {
+  color: #6b3e14;
+}
+.tab-btn::after {
+  background: #c07010;
+}
+
+/* ── Step numbers: wood brown gradient ── */
+.step-num {
+  background: linear-gradient(135deg, #f5c840, #e89820);
+  color: #3d2010;
+  box-shadow: 0 2px 8px rgba(200,120,32,0.4);
+}
+
+/* ── Rarity badges: refined ── */
+.cat-card-rarity.common, .rarity-badge.common {
+  background: #e8f5e9;
+  color: #3a7a30;
+}
+
+/* ── Returning banner: warm wood card ── */
+.returning-banner {
+  background: linear-gradient(135deg, #fffbee, #fff3d8);
+  border-color: rgba(200,160,80,0.4);
+}
+.returning-stat-val { color: #8b4e10; }
+
+/* ── Collection progress: warm gold ── */
+.collection-progress-fill {
+  background: linear-gradient(90deg, #f5c840, #e89820, #4cc9f0);
+}
+
+/* ── Feature pills: warm wood tint ── */
+.feature-pill {
+  background: linear-gradient(135deg, #fffbee, #fff5da);
+  border-color: rgba(200,160,80,0.35);
+  color: #6b3e14;
+}
+
+/* ── Studio badge: wood accent ── */
+.studio-badge {
+  background: rgba(255,248,220,0.45);
+  border-color: rgba(200,160,80,0.5);
+  color: rgba(93,62,26,0.85);
+}
+
+/* ── Synterlab footer ── */
+.synterlab-footer strong { color: #8b5e2c; }
