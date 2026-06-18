@@ -3410,3 +3410,250 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:#e8d8c0;color:v
   overscroll-behavior-x: contain;
   touch-action: pan-x;
 }
+
+
+/* ═══════════════════════════════════════
+   PROFILE / DASHBOARD VIEW
+   ═══════════════════════════════════════ */
+
+/* ── Topbar logo image ── */
+.topbar-logo-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+}
+
+/* ── Profile view wrapper ── */
+.profile-view {
+  padding: 0 16px 24px;
+}
+
+/* ── Profile card (avatar + name) ── */
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: linear-gradient(135deg,#fff8ee,#fff3e0);
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(74,55,40,0.10);
+  border: 1.5px solid rgba(243,167,18,0.25);
+}
+.profile-avatar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.profile-avatar {
+  font-size: 44px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.12));
+}
+.profile-lv-tag {
+  background: linear-gradient(135deg,#f9c74f,#f8961e);
+  color: #3d2c1e;
+  font-size: 11px;
+  font-weight: 900;
+  padding: 3px 8px;
+  border-radius: 10px;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(243,167,18,0.3);
+}
+.profile-name-block {
+  flex: 1;
+}
+.profile-name-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-light);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.profile-name-input {
+  width: 100%;
+  border: 2px solid var(--tan);
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  background: rgba(255,255,255,0.8);
+  outline: none;
+  transition: border-color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.profile-name-input:focus {
+  border-color: var(--orange);
+  background: #fff;
+}
+.profile-name-input::placeholder {
+  color: var(--brown);
+  font-weight: 600;
+}
+
+/* ── XP progress row ── */
+.profile-xp-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 14px;
+  padding: 8px 14px;
+  margin-bottom: 14px;
+  border: 1.5px solid rgba(243,167,18,0.18);
+}
+.profile-xp-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+.profile-xp-bar-bg {
+  flex: 1;
+  height: 8px;
+  background: var(--tan);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.profile-xp-fill {
+  height: 100%;
+  background: linear-gradient(90deg,#f9c74f,#f8961e);
+  border-radius: 10px;
+  transition: width 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+.profile-xp-pct {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--orange);
+  min-width: 28px;
+  text-align: right;
+}
+
+/* ── Stats grid ── */
+.profile-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.pstat-card {
+  background: linear-gradient(135deg,#fff,#fff8ee);
+  border-radius: 16px;
+  padding: 14px 10px 10px;
+  text-align: center;
+  box-shadow: 0 3px 12px rgba(74,55,40,0.08);
+  border: 1.5px solid rgba(243,167,18,0.18);
+}
+.pstat-icon { font-size: 24px; margin-bottom: 4px; line-height: 1; }
+.pstat-val  {
+  font-family: 'Fredoka One', cursive;
+  font-size: 22px;
+  color: var(--text);
+  line-height: 1.1;
+}
+.pstat-denom {
+  font-size: 14px;
+  color: var(--text-light);
+}
+.pstat-lbl {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-light);
+  margin-top: 2px;
+}
+
+/* ── Section titles ── */
+.profile-section-title {
+  font-family: 'Fredoka One', cursive;
+  font-size: 15px;
+  color: var(--brown-dark);
+  margin: 0 0 8px;
+  letter-spacing: 0.03em;
+}
+
+/* ── Collection progress bars ── */
+.profile-coll-bars {
+  background: linear-gradient(135deg,#fff,#fff8ee);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+  box-shadow: 0 3px 12px rgba(74,55,40,0.08);
+  border: 1.5px solid rgba(74,55,40,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.pcb-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pcb-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  min-width: 80px;
+}
+.pcb-bar {
+  flex: 1;
+  height: 10px;
+  background: var(--tan);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.pcb-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.5s ease;
+}
+.pcb-common { background: linear-gradient(90deg,#90be6d,#6a994e); }
+.pcb-rare   { background: linear-gradient(90deg,#4cc9f0,#2e9fbf); }
+.pcb-legend { background: linear-gradient(90deg,#c77dff,#9b5de5); }
+.pcb-count {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-light);
+  min-width: 32px;
+  text-align: right;
+}
+
+/* ── Danger zone ── */
+.profile-danger-zone {
+  background: linear-gradient(135deg,#fff5f5,#fff);
+  border-radius: 16px;
+  padding: 16px;
+  border: 1.5px solid rgba(220,60,60,0.2);
+  box-shadow: 0 3px 12px rgba(200,50,50,0.06);
+}
+.profile-danger-hint {
+  font-size: 12px;
+  color: #a05050;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+.reset-game-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg,#ff6b6b,#e53935);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(229,57,53,0.35);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.reset-game-btn:active {
+  transform: scale(0.96);
+  box-shadow: 0 2px 6px rgba(229,57,53,0.25);
+}
