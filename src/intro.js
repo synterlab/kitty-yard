@@ -42,6 +42,14 @@ export function showIntroScreen(onStart) {
           </div>
         </div>
 
+        <!-- Feature pills -->
+        <div class="intro-feature-pills">
+          <div class="feature-pill">🐾 22 Unique Cats</div>
+          <div class="feature-pill">🗺️ 3 Areas</div>
+          <div class="feature-pill">⚡ Free to Play</div>
+          <div class="feature-pill">📱 Mobile-First</div>
+        </div>
+
         <!-- Cat preview row -->
         <div class="intro-cat-row">
           ${["biscuit","duchess","emperor","aurora","phantom"].map(id =>
