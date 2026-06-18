@@ -547,3 +547,226 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:#e8d8c0;color:v
   .collection-grid{grid-template-columns:repeat(4,1fr);}
   #app{max-width:480px;}
 }
+
+/* ═══════════════════════════════════════
+   SYNTERLAB STUDIO POLISH
+   ═══════════════════════════════════════ */
+
+/* ── More cinematic intro bg ── */
+.intro-bg {
+  background: linear-gradient(165deg, #ffe566 0%, #ffb347 35%, #ff7a2a 70%, #f05020 100%);
+  position: relative;
+}
+
+/* ── Stars / particles layer ── */
+.intro-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.95) 1.5px, transparent 1.5px),
+    radial-gradient(circle, rgba(255,255,255,0.7)  1px,   transparent 1px),
+    radial-gradient(circle, rgba(255,255,255,0.55) 1px,   transparent 1px),
+    radial-gradient(circle, rgba(255,255,255,0.8)  1.2px, transparent 1.2px);
+  background-size: 130px 110px, 90px 80px, 70px 65px, 50px 55px;
+  background-position: 8px 10px, 38px 28px, 62px 48px, 22px 54px;
+  animation: starsTwinkle 5s ease-in-out infinite alternate;
+}
+@keyframes starsTwinkle {
+  0%   { opacity: 0.45; }
+  50%  { opacity: 0.75; }
+  100% { opacity: 0.35; }
+}
+
+/* Ensure parade + card float above stars */
+.cat-parade { position: relative; z-index: 1; }
+.intro-card  { position: relative; z-index: 1; }
+
+/* ── Studio badge ── */
+.studio-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255,255,255,0.28);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(255,255,255,0.45);
+  border-radius: 20px;
+  padding: 5px 14px 5px 10px;
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(93,62,26,0.9);
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  margin-top: 10px;
+  box-shadow: 0 2px 12px rgba(240,128,48,0.18);
+}
+.studio-badge-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff9f43, #f08030);
+  flex-shrink: 0;
+  box-shadow: 0 0 6px rgba(240,128,48,0.6);
+  animation: badgePulse 2.2s ease-in-out infinite;
+}
+@keyframes badgePulse {
+  0%, 100% { transform: scale(1);   opacity: 1;   }
+  50%       { transform: scale(1.5); opacity: 0.65; }
+}
+
+/* ── Version badge ── */
+.version-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--orange), var(--yellow-dark));
+  color: var(--white);
+  font-size: 10px;
+  font-weight: 900;
+  padding: 2px 8px;
+  border-radius: 10px;
+  vertical-align: middle;
+  margin-left: 6px;
+  letter-spacing: 0.6px;
+  box-shadow: 0 2px 8px rgba(243,167,18,0.45);
+}
+
+/* ── Intro logo glow ── */
+.intro-logo-text {
+  filter: drop-shadow(0 3px 14px rgba(240,100,30,0.3));
+}
+
+/* ── Intro card: improved lift ── */
+.intro-card {
+  box-shadow:
+    0 -10px 60px rgba(240,128,48,0.22),
+    0 -2px 0 rgba(255,210,120,0.35);
+}
+
+/* ── More epic start button ── */
+.intro-start-btn {
+  background: linear-gradient(135deg, #ffb347 0%, #f08030 55%, #e0621a 100%);
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.18);
+  box-shadow:
+    0 8px 32px rgba(240,128,48,0.55),
+    inset 0 1px 0 rgba(255,210,120,0.5);
+  letter-spacing: 0.4px;
+  animation: btnPulse 3s ease-in-out infinite alternate;
+}
+@keyframes btnPulse {
+  from { box-shadow: 0 8px 32px rgba(240,128,48,0.5), inset 0 1px 0 rgba(255,210,120,0.5); }
+  to   { box-shadow: 0 14px 48px rgba(240,128,48,0.8), inset 0 1px 0 rgba(255,210,120,0.5); }
+}
+.intro-start-btn:active {
+  transform: scale(0.97);
+  animation: none;
+  box-shadow: 0 4px 16px rgba(240,128,48,0.35);
+}
+
+/* ── Synterlab footer in intro ── */
+.synterlab-footer {
+  text-align: center;
+  padding: 20px 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-light);
+  letter-spacing: 0.4px;
+}
+.synterlab-footer strong {
+  color: var(--brown-dark);
+  font-weight: 900;
+}
+
+/* ── Legendary card shimmer ── */
+.cat-card.legendary {
+  position: relative;
+  overflow: hidden;
+}
+.cat-card.legendary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    108deg,
+    transparent 25%,
+    rgba(195,110,255,0.2) 50%,
+    transparent 75%
+  );
+  border-radius: var(--radius);
+  pointer-events: none;
+  animation: legendaryShimmer 3.5s ease-in-out infinite;
+}
+@keyframes legendaryShimmer {
+  0%        { transform: translateX(-110%); }
+  55%, 100% { transform: translateX(110%);  }
+}
+
+/* ── Rare card subtle shine ── */
+.cat-card.rare {
+  position: relative;
+  overflow: hidden;
+}
+.cat-card.rare::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    108deg,
+    transparent 25%,
+    rgba(76,201,240,0.15) 50%,
+    transparent 75%
+  );
+  border-radius: var(--radius);
+  pointer-events: none;
+  animation: rareShimmer 4.5s ease-in-out infinite;
+}
+@keyframes rareShimmer {
+  0%        { transform: translateX(-110%); }
+  65%, 100% { transform: translateX(110%);  }
+}
+
+/* ── Enhanced topbar ── */
+.topbar {
+  background: linear-gradient(135deg, #ffcc40 0%, #ff9f43 50%, #f07828 100%);
+  box-shadow: 0 3px 22px rgba(240,128,48,0.42);
+}
+
+/* ── Area scene depth ── */
+.area-scene {
+  box-shadow:
+    0 8px 32px rgba(74,55,40,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.35),
+    inset 0 -2px 0 rgba(0,0,0,0.06);
+}
+
+/* ── Tab bar: active glow ── */
+.tab-btn.active {
+  background: linear-gradient(180deg, #fffbf2, #fff3de);
+  color: var(--brown-dark);
+}
+.tab-btn.active .tab-icon {
+  filter: drop-shadow(0 1px 4px rgba(243,167,18,0.45));
+}
+
+/* ── Coin display: premium glass ── */
+.coin-display {
+  background: rgba(255,255,255,0.88);
+  box-shadow: 0 2px 14px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.95);
+}
+
+/* ── Bottom sheet lift ── */
+.bottom-sheet {
+  box-shadow: 0 -10px 60px rgba(74,55,40,0.2);
+}
+
+/* ── Notification: improved ── */
+.notification {
+  box-shadow: 0 10px 40px rgba(0,0,0,0.18), 0 2px 0 rgba(255,255,255,0.5) inset;
+}
+
+/* ── Rarity badge: legendary glow ── */
+.rarity-badge.legendary,
+.cat-card-rarity.legendary {
+  background: linear-gradient(135deg, #f3e5f5, #e0c8ff);
+  box-shadow: 0 1px 6px rgba(155,93,229,0.25);
+}
