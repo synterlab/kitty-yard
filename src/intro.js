@@ -11,7 +11,6 @@ export function markIntroSeen() {
   localStorage.setItem(INTRO_KEY, "1");
 }
 
-// Cats playing in the garden — each has a unique role/animation
 const GARDEN_CATS = [
   { id: "biscuit",   size: 62, role: "roll",   x: -9,  y: 44, dur: 11,  delay: 0   },
   { id: "duchess",   size: 52, role: "jump",   x: 22,  y: 50, dur: 1.3, delay: 0.4 },
@@ -22,7 +21,6 @@ const GARDEN_CATS = [
   { id: "tangerine", size: 40, role: "chase",  x: 34,  y: 53, dur: 4.2, delay: 1.6 },
 ];
 
-// Butterflies drifting across the garden
 const BUTTERFLIES = [
   { left: 6,  top: 16, dur: 14, delay: 0,   color: "#ff80c0", w: 20 },
   { left: 28, top: 24, dur: 18, delay: -5,  color: "#c060ff", w: 16 },
@@ -31,7 +29,6 @@ const BUTTERFLIES = [
   { left: 44, top: 20, dur: 20, delay: -14, color: "#80e880", w: 14 },
 ];
 
-// Garden floating particles: leaves and flower petals
 const GARDEN_PARTICLES = [
   { emoji: "🍃", left: 4,   delay: 0,   dur: 9,  size: 14, op: 0.65 },
   { emoji: "🌸", left: 14,  delay: 1.2, dur: 11, size: 12, op: 0.7  },
@@ -43,7 +40,6 @@ const GARDEN_PARTICLES = [
   { emoji: "🌸", left: 90,  delay: 2.5, dur: 11, size: 14, op: 0.7  },
 ];
 
-// Clouds drifting through the sky
 const CLOUDS = [
   { w: 90,  h: 36, left: 4,   top: 5,  dur: 34, delay: 0    },
   { w: 68,  h: 28, left: 55,  top: 11, dur: 46, delay: -14  },
@@ -54,12 +50,12 @@ const CLOUDS = [
 function makeButterflyWings(color, w) {
   const h = Math.round(w * 0.7);
   const hw = w / 2, hh = h / 2;
-  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <ellipse cx="${hw * 0.5}" cy="${hh * 0.9}" rx="${hw * 0.5}" ry="${hh * 0.95}" fill="${color}" opacity="0.88"/>
-    <ellipse cx="${w - hw * 0.5}" cy="${hh * 0.9}" rx="${hw * 0.5}" ry="${hh * 0.95}" fill="${color}" opacity="0.88"/>
-    <ellipse cx="${hw * 0.5}" cy="${h - hh * 0.6}" rx="${hw * 0.38}" ry="${hh * 0.7}" fill="${color}" opacity="0.65"/>
-    <ellipse cx="${w - hw * 0.5}" cy="${h - hh * 0.6}" rx="${hw * 0.38}" ry="${hh * 0.7}" fill="${color}" opacity="0.65"/>
-    <rect x="${hw - 0.5}" y="${hh * 0.25}" width="1" height="${h * 0.75}" rx="0.5" fill="#3d2c1e" opacity="0.45"/>
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" fill="none">
+    <ellipse cx="${hw*0.5}" cy="${hh*0.9}" rx="${hw*0.5}" ry="${hh*0.95}" fill="${color}" opacity="0.88"/>
+    <ellipse cx="${w-hw*0.5}" cy="${hh*0.9}" rx="${hw*0.5}" ry="${hh*0.95}" fill="${color}" opacity="0.88"/>
+    <ellipse cx="${hw*0.5}" cy="${h-hh*0.6}" rx="${hw*0.38}" ry="${hh*0.7}" fill="${color}" opacity="0.65"/>
+    <ellipse cx="${w-hw*0.5}" cy="${h-hh*0.6}" rx="${hw*0.38}" ry="${hh*0.7}" fill="${color}" opacity="0.65"/>
+    <rect x="${hw-0.5}" y="${hh*0.25}" width="1" height="${h*0.75}" rx="0.5" fill="#3d2c1e" opacity="0.45"/>
   </svg>`;
 }
 
@@ -73,10 +69,10 @@ export function showIntroScreen(onStart) {
   const btnText     = isReturning ? "Continue Playing" : "Start Exploring";
 
   const PILLS = [
-    { icon: "🐾", label: "22 Cats" },
+    { icon: "🐾", label: "22 Cats"  },
     { icon: "🗺️", label: "3 Areas" },
     { icon: "⚡", label: "Free Play" },
-    { icon: "🌙", label: "Offline" },
+    { icon: "🌙", label: "Offline"  },
   ];
 
   const overlay = document.createElement("div");
@@ -84,7 +80,7 @@ export function showIntroScreen(onStart) {
   overlay.innerHTML = `
     <div class="intro-bg">
 
-      <!-- Floating garden particles: leaves & petals -->
+      <!-- Floating garden particles -->
       <div class="intro-particles" aria-hidden="true">
         ${GARDEN_PARTICLES.map(p => `
           <span class="intro-particle" style="
@@ -96,7 +92,7 @@ export function showIntroScreen(onStart) {
           ">${p.emoji}</span>`).join("")}
       </div>
 
-      <!-- Sky decoration: sun + drifting clouds -->
+      <!-- Sky: sun + clouds -->
       <div class="intro-garden-sky" aria-hidden="true">
         <div class="garden-sun">
           <div class="garden-sun-rays"></div>
@@ -111,34 +107,36 @@ export function showIntroScreen(onStart) {
           "></div>`).join("")}
       </div>
 
-      <!-- Cats playing in the garden + butterflies to chase -->
+      <!-- Cats + butterflies in the garden -->
       <div class="intro-bg-cats" aria-hidden="true">
-
         ${BUTTERFLIES.map(b => `
           <div class="garden-butterfly" style="
-            left:${b.left}%;
-            top:${b.top}%;
-            animation-duration:${b.dur}s;
-            animation-delay:${b.delay}s;
+            left:${b.left}%;top:${b.top}%;
+            animation-duration:${b.dur}s;animation-delay:${b.delay}s;
           ">${makeButterflyWings(b.color, b.w)}</div>`).join("")}
-
         ${GARDEN_CATS.map(c => `
           <div class="garden-cat garden-cat-${c.role}" style="
-            left:${c.x}%;
-            top:${c.y}%;
-            animation-duration:${c.dur}s;
-            animation-delay:${c.delay}s;
+            left:${c.x}%;top:${c.y}%;
+            animation-duration:${c.dur}s;animation-delay:${c.delay}s;
           ">${generateCatSVG(c.id, c.size)}</div>`).join("")}
-
       </div>
 
-      <!-- Decorative grass border -->
+      <!-- Grass border -->
       <div class="garden-grass-border" aria-hidden="true"></div>
 
-      <!-- Hero content: logo + CTA -->
+      <!-- Hero content -->
       <div class="intro-hero">
 
+        <!-- Logo with garden glow halo -->
         <div class="intro-logo-wrap">
+          <div class="logo-garden-halo"></div>
+          <div class="logo-garden-leaves" aria-hidden="true">
+            <span class="logo-leaf ll1">🌿</span>
+            <span class="logo-leaf ll2">🌸</span>
+            <span class="logo-leaf ll3">🍃</span>
+            <span class="logo-leaf ll4">🌼</span>
+            <span class="logo-leaf ll5">🍀</span>
+          </div>
           <img src="logo.png" class="intro-logo-img" alt="Kitty Yard" />
         </div>
 

@@ -1,4 +1,4 @@
-// === KITTY YARD — Main v2 (Spectacular Edition) ===
+// === KITTY YARD — Main v3 (Garden Edition) ===
 import { CATS } from "./data/cats.js";
 import { ITEMS } from "./data/items.js";
 import { AREAS } from "./data/areas.js";
@@ -15,6 +15,118 @@ let activeTab      = "yard";
 let activeAreaId   = "front_yard";
 let visitTimers    = {};
 let activeVisitors = {};
+
+// ══════════════════════════════════════
+// WEATHER SYSTEM
+// ══════════════════════════════════════
+const WEATHER_STATES = [
+  { id: "sunny",   emoji: "☀️",  name: "Sunny",   visitMult: 1.0,  desc: "Perfect day for cat watching!"  },
+  { id: "cloudy",  emoji: "⛅",  name: "Cloudy",  visitMult: 0.9,  desc: "Cats prefer the shade today."   },
+  { id: "breezy",  emoji: "🍃",  name: "Breezy",  visitMult: 1.2,  desc: "The wind brings curious visitors!" },
+  { id: "rainy",   emoji: "🌧️", name: "Rainy",   visitMult: 0.75, desc: "Cats seek shelter... yours!"    },
+  { id: "rainbow", emoji: "🌈",  name: "Rainbow", visitMult: 1.5,  desc: "Legendary cats feel the magic!" },
+];
+
+// Start with sunny/cloudy/breezy (first 3 states)
+let weatherIdx = Math.floor(Math.random() * 3);
+let currentWeather = WEATHER_STATES[weatherIdx];
+
+function cycleWeather() {
+  weatherIdx = (weatherIdx + 1) % WEATHER_STATES.length;
+  currentWeather = WEATHER_STATES[weatherIdx];
+  updateWeatherDisplay();
+  if (currentWeather.id === "rainbow") {
+    showToast("🌈", "Rainbow appeared!", "Legendary cats are more likely to visit! ✨");
+  } else if (currentWeather.id === "rainy") {
+    showToast("🌧️", "It's raining!", "Cats are seeking shelter in your yard.");
+  }
+}
+
+function updateWeatherDisplay() {
+  document.querySelectorAll(".area-weather").forEach(el => {
+    el.innerHTML = `<span class="weather-emoji">${currentWeather.emoji}</span><span class="weather-label">${currentWeather.name}</span>`;
+  });
+  // Update scene weather class
+  document.querySelectorAll(".area-scene").forEach(el => {
+    WEATHER_STATES.forEach(w => el.classList.remove(`weather-${w.id}`));
+    el.classList.add(`weather-${currentWeather.id}`);
+  });
+}
+
+// Weather cycles every 5 minutes
+setInterval(cycleWeather, 5 * 60 * 1000);
+
+// ══════════════════════════════════════
+// GARDEN LEVEL
+// ══════════════════════════════════════
+function getGardenLevel() {
+  const totalVisits = Object.values(state.discoveredCats).reduce((s, v) => s + v, 0);
+  return Math.max(1, Math.floor(totalVisits / 8) + 1);
+}
+
+function getGardenLevelEmoji(level) {
+  if (level >= 20) return "🌳";
+  if (level >= 10) return "🌿";
+  if (level >= 5)  return "🌱";
+  return "🌱";
+}
+
+// ══════════════════════════════════════
+// DAILY BONUS
+// ══════════════════════════════════════
+function checkDailyBonus() {
+  const today = new Date().toDateString();
+  if (state.lastLoginDate === today) return;
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  const streak = state.lastLoginDate === yesterday ? (state.loginStreak || 0) + 1 : 1;
+  state.loginStreak = streak;
+  state.lastLoginDate = today;
+  const bonus = 25 + Math.min(streak - 1, 7) * 15; // 25 base, +15/day streak, max 130
+  state.coins += bonus;
+  saveState(state);
+  const streakEmoji = streak >= 7 ? "🔥🔥🔥" : streak >= 3 ? "🔥🔥" : "🔥";
+  setTimeout(() => {
+    showToast("🌅", `Day ${streak} streak! ${streakEmoji}`, `Daily bonus: +${bonus} 🪙 coins`);
+  }, 1800);
+}
+
+// ══════════════════════════════════════
+// PET CATS
+// ══════════════════════════════════════
+function petCat(catId) {
+  const now = Date.now();
+  if (!state.petCooldowns) state.petCooldowns = {};
+  if (now - (state.petCooldowns[catId] || 0) < 30000) {
+    showToast("😸", "Cat needs a moment!", "Come back soon to pet again 🐾");
+    return;
+  }
+  const cat = CATS.find(c => c.id === catId);
+  const bonusMap = { common: 3, rare: 7, legendary: 18 };
+  const bonus = bonusMap[cat?.rarity || "common"];
+  state.petCooldowns[catId] = now;
+  state.coins += bonus;
+  saveState(state);
+  updateCoinDisplay(true);
+  showHeartAnimation(catId);
+  closeSheet();
+  showToast(generateCatSVG(catId, 44), `${cat?.name || "Cat"} loves you! 😻`, `Petting bonus: +${bonus} 🪙`);
+}
+
+function showHeartAnimation(catId) {
+  const sprite = document.querySelector(`[data-cat="${catId}"] .cat-visitor-sprite`);
+  if (!sprite) return;
+  ["💕", "💗", "💖"].forEach((h, i) => {
+    setTimeout(() => {
+      const el = document.createElement("div");
+      el.className = "pet-heart";
+      el.textContent = h;
+      el.style.left = `${30 + Math.random() * 40}%`;
+      sprite.style.position = "relative";
+      sprite.appendChild(el);
+      setTimeout(() => el.remove(), 1200);
+    }, i * 120);
+  });
+}
 
 // ══════════════════════════════════════
 // OFFLINE SIMULATION
@@ -39,10 +151,16 @@ function handleOfflineVisits() {
 // ══════════════════════════════════════
 function render() {
   const app = document.getElementById("app");
+  const level = getGardenLevel();
+  const lvEmoji = getGardenLevelEmoji(level);
   app.innerHTML = `
     <div class="topbar">
       <div class="topbar-logo">
         <img src="logo.png" class="topbar-logo-img" alt="Kitty Yard" />
+      </div>
+      <div class="garden-level-badge" title="Garden Level — gain XP by attracting cats!">
+        <span class="garden-level-icon">${lvEmoji}</span>
+        <span class="garden-level-text">Lv.${level}</span>
       </div>
       <div class="coin-display">
         <span class="coin-icon">🪙</span>
@@ -102,8 +220,6 @@ function renderTab() {
 // ══════════════════════════════════════
 // YARD VIEW
 // ══════════════════════════════════════
-const AREA_WEATHER = { front_yard:"☀️", flower_garden:"🌸", wooden_deck:"🍃" };
-
 function renderYard() {
   const area = AREAS.find(a=>a.id===activeAreaId);
   return `
@@ -142,15 +258,19 @@ function renderAreaScene(area) {
         <div class="cat-visitor rarity-${v.cat.rarity}" data-cat="${v.cat.id}">
           <div class="cat-visitor-sprite">${generateCatSVG(v.cat.id, 64)}</div>
           <div class="cat-visitor-name">${v.cat.name}</div>
+          <button class="cat-pet-btn" data-pet="${v.cat.id}" title="Pet ${v.cat.name}">🐾</button>
         </div>`).join("")
     : `<div class="no-cats-msg waiting-dots">Waiting for visitors<span>.</span><span>.</span><span>.</span></div>`;
 
   return `
-    <div class="area-scene ${area.cssClass}" id="scene-${area.id}">
+    <div class="area-scene ${area.cssClass} weather-${currentWeather.id}" id="scene-${area.id}">
       ${isLocked ? lockedOverlayHTML(area) : ""}
       <div class="area-scene-header">
         <div class="area-scene-title">${area.emoji} ${area.name}</div>
-        <div class="area-weather">${AREA_WEATHER[area.id]||""}</div>
+        <div class="area-weather">
+          <span class="weather-emoji">${currentWeather.emoji}</span>
+          <span class="weather-label">${currentWeather.name}</span>
+        </div>
       </div>
       <div class="visiting-cats" id="visitors-${area.id}">${visitorsHtml}</div>
       <div class="slot-section-title">Item Slots</div>
@@ -224,8 +344,17 @@ function attachYardEvents() {
       showToast("➕","Slot Added!",`${area.name} now has ${state.areaSlots[area.id]} item slots.`);
     });
   });
+  // Cat sprite: open detail sheet
   document.querySelectorAll(".cat-visitor").forEach(el=>{
-    el.addEventListener("click",()=>openCatSheet(el.dataset.cat));
+    el.querySelector(".cat-visitor-sprite")?.addEventListener("click",()=>openCatSheet(el.dataset.cat));
+    el.querySelector(".cat-visitor-name")?.addEventListener("click",()=>openCatSheet(el.dataset.cat));
+  });
+  // Pet button: quick pet from yard
+  document.querySelectorAll(".cat-pet-btn").forEach(btn=>{
+    btn.addEventListener("click", e => {
+      e.stopPropagation();
+      petCat(btn.dataset.pet);
+    });
   });
 }
 
@@ -277,6 +406,12 @@ function openCatSheet(catId) {
   const favItem    = ITEMS.find(it=>it.id===cat.favoriteItem);
   const catSVG     = generateCatSVG(catId, 110);
 
+  const isCurrentVisitor = Object.values(activeVisitors).some(arr => arr.some(v => v.cat.id === catId));
+  const cooldownMs = (state.petCooldowns || {})[catId] || 0;
+  const canPet = Date.now() - cooldownMs >= 30000;
+  const petBonusMap = { common: 3, rare: 7, legendary: 18 };
+  const petBonus = petBonusMap[cat.rarity];
+
   showBottomSheet(`
     <div class="sheet-handle"></div>
     <div class="sheet-content">
@@ -301,34 +436,65 @@ function openCatSheet(catId) {
           <span class="fav-emoji">✨</span>
           <div><div class="fav-label">Hint</div><div class="fav-name">Needs ${(cat.requiredItems||[]).length}+ specific items${cat.requiredArea?` in ${AREAS.find(a=>a.id===cat.requiredArea)?.name}`:""}!</div></div>
         </div>`:""}
-    </div>`);
+      ${isCurrentVisitor ? `
+        <button class="pet-btn" id="pet-sheet-btn" ${canPet?"":"disabled"}>
+          ${canPet
+            ? `🐾 Pet ${cat.name} <span class="pet-bonus-badge">+${petBonus} 🪙</span>`
+            : `😺 Already petted — come back soon!`}
+        </button>` : ""}
+    </div>`, () => {
+    document.getElementById("pet-sheet-btn")?.addEventListener("click", () => petCat(catId));
+  });
 }
 
 // ══════════════════════════════════════
 // SHOP VIEW
 // ══════════════════════════════════════
 function renderShop() {
-  const itemsHtml = ITEMS.map(item=>{
-    const owned    = state.ownedItems[item.id]||0;
-    const canAfford = state.coins>=item.price;
+  // Group items by category
+  const categories = [
+    { id: "food",    label: "🍽️ Food",    emoji: "🍽️" },
+    { id: "toy",     label: "🧸 Toys",    emoji: "🧸" },
+    { id: "plant",   label: "🌿 Plants",  emoji: "🌿" },
+    { id: "shelter", label: "🏠 Shelter", emoji: "🏠" },
+    { id: "comfort", label: "💤 Comfort", emoji: "💤" },
+  ];
+
+  const shopHtml = categories.map(cat => {
+    const catItems = ITEMS.filter(it => it.category === cat.id);
+    if (!catItems.length) return "";
     return `
-      <div class="shop-item">
-        <div class="shop-item-emoji">${item.emoji}</div>
-        <div class="shop-item-info">
-          <div class="shop-item-name">${item.name}</div>
-          <div class="shop-item-desc">${item.desc}</div>
-          ${owned>0?`<div class="shop-item-owned">✓ Owned: ${owned}</div>`:""}
-        </div>
-        <div>
-          <button class="buy-btn" data-buy="${item.id}" data-price="${item.price}" ${canAfford?"":"disabled"}>
-            Buy<br><span class="btn-price">🪙 ${item.price}</span>
-          </button>
-        </div>
+      <div class="shop-category">
+        <div class="shop-category-label">${cat.label}</div>
+        ${catItems.map(item => {
+          const owned = state.ownedItems[item.id]||0;
+          const canAfford = state.coins>=item.price;
+          return `
+            <div class="shop-item">
+              <div class="shop-item-emoji">${item.emoji}</div>
+              <div class="shop-item-info">
+                <div class="shop-item-name">${item.name}</div>
+                <div class="shop-item-desc">${item.desc}</div>
+                ${owned>0?`<div class="shop-item-owned">✓ Owned: ${owned}</div>`:""}
+              </div>
+              <div>
+                <button class="buy-btn" data-buy="${item.id}" data-price="${item.price}" ${canAfford?"":"disabled"}>
+                  Buy<br><span class="btn-price">🪙 ${item.price}</span>
+                </button>
+              </div>
+            </div>`;
+        }).join("")}
       </div>`;
   }).join("");
+
+  const level = getGardenLevel();
   return `
-    <div class="view-header">🛒 Shop</div>
-    <div class="shop-items">${itemsHtml}</div>
+    <div class="view-header">🛒 Shop <span class="view-header-sub">Level ${level} garden</span></div>
+    <div class="garden-weather-banner weather-${currentWeather.id}">
+      <span class="gwb-emoji">${currentWeather.emoji}</span>
+      <span class="gwb-text">${currentWeather.desc}</span>
+    </div>
+    <div class="shop-items">${shopHtml}</div>
     <div class="settings-area">
       <p>⚠️ Danger Zone</p>
       <button class="reset-btn" id="reset-btn">Reset All Progress</button>
@@ -366,24 +532,43 @@ function attachShopEvents() {
 function renderCollection() {
   const total = CATS.length;
   const found = Object.keys(state.discoveredCats).length;
-  const cards = CATS.map(cat=>{
-    const disc  = !!state.discoveredCats[cat.id];
-    const visits= state.discoveredCats[cat.id]||0;
+  const pct   = Math.round((found / total) * 100);
+
+  // Group by rarity
+  const groups = [
+    { id:"legendary", label:"✨ Legendary", cats: CATS.filter(c=>c.rarity==="legendary") },
+    { id:"rare",      label:"💎 Rare",      cats: CATS.filter(c=>c.rarity==="rare")      },
+    { id:"common",    label:"🐱 Common",    cats: CATS.filter(c=>c.rarity==="common")    },
+  ];
+
+  const cardsHtml = groups.map(group => {
+    const foundInGroup = group.cats.filter(c => !!state.discoveredCats[c.id]).length;
     return `
-      <div class="cat-card ${cat.rarity}${disc?"":" locked"}" data-cat="${cat.id}">
-        <div class="cat-card-svg">${disc ? generateCatSVG(cat.id,60) : `<div class="cat-lock-icon">❓</div>`}</div>
-        <div class="cat-card-name">${disc?cat.name:"???"}</div>
-        <div class="cat-card-rarity ${cat.rarity}">${cat.rarity}</div>
-        <div class="cat-card-visits">${disc?`${visits} visit${visits!==1?"s":""}`:""}</div>
+      <div class="collection-group">
+        <div class="collection-group-label">${group.label} <span class="group-count">${foundInGroup}/${group.cats.length}</span></div>
+        <div class="collection-grid">
+          ${group.cats.map(cat => {
+            const disc  = !!state.discoveredCats[cat.id];
+            const visits= state.discoveredCats[cat.id]||0;
+            return `
+              <div class="cat-card ${cat.rarity}${disc?"":" locked"}" data-cat="${cat.id}">
+                <div class="cat-card-svg">${disc ? generateCatSVG(cat.id,60) : `<div class="cat-lock-icon">❓</div>`}</div>
+                <div class="cat-card-name">${disc?cat.name:"???"}</div>
+                <div class="cat-card-rarity ${cat.rarity}">${cat.rarity}</div>
+                <div class="cat-card-visits">${disc?`${visits} visit${visits!==1?"s":""}`:""}</div>
+              </div>`;
+          }).join("")}
+        </div>
       </div>`;
   }).join("");
-  const pct = Math.round((found / total) * 100);
+
   return `
     <div class="view-header">📖 Cats <span class="view-header-sub">${found}/${total} found</span></div>
     <div class="collection-progress">
       <div class="collection-progress-fill" style="width:${pct}%"></div>
     </div>
-    <div class="collection-grid">${cards}</div>`;
+    <div class="collection-pct-label">${pct}% complete</div>
+    ${cardsHtml}`;
 }
 
 function attachCollectionEvents() {
@@ -400,6 +585,8 @@ function renderScrapbook() {
       <div class="empty-icon">🪴</div>
       <p>No visits yet!<br>Place some items in the yard to attract cats.</p>
     </div>`;
+
+  const totalGifts = state.gallery.reduce((s,e) => s + (e.gift||0), 0);
   const entries = state.gallery.slice(0,100).map(entry=>{
     const cat  = CATS.find(c=>c.id===entry.catId);
     const area = AREAS.find(a=>a.id===entry.areaId);
@@ -415,8 +602,16 @@ function renderScrapbook() {
         </div>
       </div>`;
   }).join("");
+
   return `
-    <div class="view-header">📸 Memories</div>
+    <div class="view-header">📸 Memories <span class="view-header-sub">${state.gallery.length} visits</span></div>
+    <div class="scrapbook-summary">
+      <div class="summary-stat"><span class="summary-val">${state.gallery.length}</span><span class="summary-lbl">Total Visits</span></div>
+      <div class="summary-divider"></div>
+      <div class="summary-stat"><span class="summary-val">🪙 ${totalGifts}</span><span class="summary-lbl">Coins Earned</span></div>
+      <div class="summary-divider"></div>
+      <div class="summary-stat"><span class="summary-val">${Object.keys(state.discoveredCats).length}</span><span class="summary-lbl">Cats Met</span></div>
+    </div>
     <div class="scrapbook-list">${entries}</div>`;
 }
 
@@ -428,6 +623,8 @@ function startVisitTimers() {
   for (const area of AREAS) {
     visitTimers[area.id] = setInterval(()=>{
       if (!state.unlockedAreas.includes(area.id)) return;
+      // Apply weather multiplier to visit chance
+      if (Math.random() > currentWeather.visitMult) return;
       const placed  = (state.placedItems[area.id]||[]).filter(Boolean);
       const existing = (activeVisitors[area.id]||[]).map(v=>v.cat.id);
       const cat = pickVisitor(area.id, placed, existing);
@@ -452,6 +649,8 @@ function spawnVisitor(areaId, cat) {
   const isFirstDiscovery = !state.discoveredCats[cat.id];
   state.discoveredCats[cat.id] = (state.discoveredCats[cat.id]||0)+1;
   saveState(state);
+  // Update level display
+  updateLevelDisplay();
 
   const areaName = AREAS.find(a=>a.id===areaId)?.name;
   if (isFirstDiscovery) {
@@ -493,9 +692,15 @@ function refreshVisitorUI(areaId) {
         <div class="cat-visitor rarity-${v.cat.rarity}" data-cat="${v.cat.id}">
           <div class="cat-visitor-sprite">${generateCatSVG(v.cat.id,64)}</div>
           <div class="cat-visitor-name">${v.cat.name}</div>
+          <button class="cat-pet-btn" data-pet="${v.cat.id}" title="Pet ${v.cat.name}">🐾</button>
         </div>`).join("")
     : `<div class="no-cats-msg waiting-dots">Waiting for visitors<span>.</span><span>.</span><span>.</span></div>`;
-  el.querySelectorAll(".cat-visitor").forEach(e=>e.addEventListener("click",()=>openCatSheet(e.dataset.cat)));
+  el.querySelectorAll(".cat-visitor .cat-visitor-sprite, .cat-visitor .cat-visitor-name").forEach(e=>{
+    e.addEventListener("click", () => openCatSheet(e.closest("[data-cat]").dataset.cat));
+  });
+  el.querySelectorAll(".cat-pet-btn").forEach(btn=>{
+    btn.addEventListener("click", e => { e.stopPropagation(); petCat(btn.dataset.pet); });
+  });
 }
 
 // ══════════════════════════════════════
@@ -506,6 +711,11 @@ function updateCoinDisplay(bump=false) {
   if (!el) return;
   el.textContent = state.coins;
   if (bump) { el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); }
+}
+
+function updateLevelDisplay() {
+  const badge = document.querySelector(".garden-level-text");
+  if (badge) badge.textContent = `Lv.${getGardenLevel()}`;
 }
 
 let toastTimeout=null;
@@ -524,7 +734,7 @@ function showToast(svgOrIcon, title, sub, rarity="") {
       <div class="notif-sub">${sub}</div>
     </div>`;
   document.getElementById("app").appendChild(el);
-  toastTimeout=setTimeout(()=>{ el.classList.add("leaving"); setTimeout(()=>el.remove(),300); },3000);
+  toastTimeout=setTimeout(()=>{ el.classList.add("leaving"); setTimeout(()=>el.remove(),300); },3500);
 }
 
 function showGiftPop(text) {
@@ -556,5 +766,10 @@ function closeSheet() { if(sheetEl){sheetEl.remove();sheetEl=null;} }
 // ══════════════════════════════════════
 document.addEventListener("DOMContentLoaded",()=>{
   handleOfflineVisits();
-  showIntroScreen(()=>{ render(); });
+  checkDailyBonus();
+  if (!hasSeenIntro()) {
+    showIntroScreen(()=>{ render(); });
+  } else {
+    showIntroScreen(()=>{ render(); });
+  }
 });
