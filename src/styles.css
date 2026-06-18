@@ -1465,3 +1465,323 @@ html,body{height:100%;font-family:'Nunito',sans-serif;background:#e8d8c0;color:v
   animation: starsTwinkle 6s ease-in-out infinite alternate !important;
 }
 
+
+/* ═══════════════════════════════════════════════════════════════
+   INTRO STUDIO v4 — Clean & Cinematic
+   Full-screen hero, no bottom card, purposeful motion only
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Reset: hide old elements we no longer render ── */
+#intro-overlay .cat-parade,
+#intro-overlay .intro-stars,
+#intro-overlay .intro-card,
+#intro-overlay .studio-badge,
+#intro-overlay .synterlab-footer { display: none !important; }
+
+/* ── Full-screen overlay ── */
+#intro-overlay {
+  position: fixed; inset: 0; z-index: 999; overflow: hidden;
+  animation: v4FadeIn 0.55s cubic-bezier(0.22,1,0.36,1) both;
+}
+@keyframes v4FadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Background: rich golden gradient ── */
+#intro-overlay .intro-bg {
+  width: 100%; height: 100%;
+  background: linear-gradient(160deg,
+    #ffe55c 0%,
+    #ffb93a 30%,
+    #ff8c2a 62%,
+    #e86010 100%) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+/* ── Ambient paw particles ── */
+.intro-particles {
+  position: absolute; inset: 0;
+  pointer-events: none; z-index: 0;
+  overflow: hidden;
+}
+.intro-particle {
+  position: absolute;
+  bottom: -20px;
+  animation: particleDrift linear infinite;
+  will-change: transform, opacity;
+}
+@keyframes particleDrift {
+  0%   { transform: translateY(0) rotate(0deg);   opacity: var(--op, 0.15); }
+  70%  { opacity: var(--op, 0.15); }
+  100% { transform: translateY(-105vh) rotate(20deg); opacity: 0; }
+}
+
+/* ── Background floating cats ── */
+.intro-bg-cats {
+  position: absolute; inset: 0;
+  pointer-events: none; z-index: 1;
+  overflow: hidden;
+}
+.intro-bg-cat {
+  position: absolute;
+  animation: bgCatFloat ease-in-out infinite alternate;
+  will-change: transform;
+  opacity: 0.22;
+  filter: blur(0.5px);
+}
+.intro-bg-cat svg { display: block; }
+@keyframes bgCatFloat {
+  from { transform: translateY(0px) rotate(-2deg); }
+  to   { transform: translateY(-14px) rotate(2deg); }
+}
+
+/* ── Hero container ── */
+#intro-overlay .intro-hero {
+  position: relative; z-index: 2;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  padding: 28px 28px 32px !important;
+  width: 100%; max-width: 420px;
+  text-align: center;
+}
+
+/* ── Logo ── */
+.intro-logo-wrap {
+  margin-bottom: 10px;
+  animation: v4LogoReveal 0.7s cubic-bezier(0.22,1,0.36,1) both;
+}
+@keyframes v4LogoReveal {
+  from { opacity: 0; transform: scale(0.72) translateY(16px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+#intro-overlay .intro-logo-img {
+  width: 148px !important;
+  height: 148px !important;
+  object-fit: contain !important;
+  display: block !important;
+  margin: 0 auto !important;
+  border-radius: 32px !important;
+  filter: drop-shadow(0 16px 40px rgba(120,55,0,0.42))
+          drop-shadow(0 4px 12px rgba(0,0,0,0.16)) !important;
+  animation: v4LogoFloat 5s ease-in-out infinite alternate !important;
+}
+@keyframes v4LogoFloat {
+  from { transform: translateY(0px);   filter: drop-shadow(0 16px 40px rgba(120,55,0,0.42)) drop-shadow(0 4px 12px rgba(0,0,0,0.16)); }
+  to   { transform: translateY(-10px); filter: drop-shadow(0 26px 48px rgba(120,55,0,0.28)) drop-shadow(0 8px 18px rgba(0,0,0,0.10)); }
+}
+
+/* ── Brand text ── */
+.intro-brand {
+  margin-bottom: 22px;
+  animation: v4SlideUp 0.65s 0.18s cubic-bezier(0.22,1,0.36,1) both;
+}
+.intro-title {
+  font-family: 'Fredoka One', cursive;
+  font-size: 44px;
+  line-height: 1;
+  letter-spacing: 1px;
+  color: #fff;
+  text-shadow:
+    0 2px 0 rgba(120,55,0,0.28),
+    0 6px 24px rgba(120,55,0,0.22);
+  margin: 0 0 6px;
+}
+#intro-overlay .intro-tagline {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  font-style: italic !important;
+  color: rgba(255,255,255,0.82) !important;
+  text-shadow: 0 1px 6px rgba(120,55,0,0.22) !important;
+  margin: 0 !important;
+  letter-spacing: 0.1px;
+}
+
+/* ── Feature pills ── */
+.intro-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.intro-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255,255,255,0.22);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255,255,255,0.38);
+  border-radius: 20px;
+  padding: 7px 14px;
+  opacity: 0;
+  animation: v4PillIn 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+.intro-pill-icon { font-size: 14px; line-height: 1; }
+.intro-pill-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.3px;
+}
+@keyframes v4PillIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.9); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Returning player stats ── */
+.intro-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(255,255,255,0.32);
+  border-radius: 20px;
+  padding: 12px 20px;
+  margin-bottom: 18px;
+  width: 100%;
+  max-width: 320px;
+  animation: v4SlideUp 0.5s 0.4s cubic-bezier(0.22,1,0.36,1) both;
+}
+.intro-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.intro-stat-val {
+  font-family: 'Fredoka One', cursive;
+  font-size: 22px;
+  color: #fff;
+  line-height: 1;
+  text-shadow: 0 2px 8px rgba(120,55,0,0.22);
+}
+.intro-stat-lbl {
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.72);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.intro-stat-sep {
+  width: 1.5px;
+  height: 32px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 2px;
+  margin: 0 4px;
+}
+
+/* ── CTA area ── */
+.intro-cta {
+  width: 100%;
+  animation: v4SlideUp 0.55s 0.6s cubic-bezier(0.22,1,0.36,1) both;
+}
+
+/* ── Start button ── */
+#intro-overlay .intro-start-btn {
+  position: relative;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100% !important;
+  padding: 18px 28px !important;
+  border-radius: 22px !important;
+  border: none !important;
+  background: #fff !important;
+  cursor: pointer;
+  overflow: hidden;
+  margin: 0 0 10px !important;
+  box-shadow:
+    0 8px 0 rgba(120,55,0,0.22),
+    0 12px 32px rgba(0,0,0,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.9) !important;
+  transition: transform 0.12s ease, box-shadow 0.12s ease !important;
+  animation: none !important;
+}
+#intro-overlay .intro-start-btn:active {
+  transform: translateY(5px) !important;
+  box-shadow:
+    0 3px 0 rgba(120,55,0,0.22),
+    0 4px 12px rgba(0,0,0,0.14),
+    inset 0 1px 0 rgba(255,255,255,0.9) !important;
+}
+
+/* Shimmer sweep */
+.intro-btn-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255,200,80,0.45) 50%,
+    transparent 65%
+  );
+  background-size: 200% 100%;
+  animation: v4BtnShimmer 2.8s ease-in-out infinite;
+  pointer-events: none;
+  border-radius: inherit;
+}
+@keyframes v4BtnShimmer {
+  0%   { background-position: 200% 0; }
+  60%  { background-position: -50% 0; }
+  100% { background-position: -50% 0; }
+}
+
+.intro-btn-text {
+  font-family: 'Fredoka One', cursive;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+  color: #c05010;
+  position: relative; z-index: 1;
+}
+.intro-btn-paw {
+  font-size: 20px;
+  position: relative; z-index: 1;
+  animation: v4PawWiggle 2s ease-in-out infinite;
+}
+@keyframes v4PawWiggle {
+  0%,100% { transform: rotate(0deg) scale(1); }
+  30%      { transform: rotate(-12deg) scale(1.15); }
+  60%      { transform: rotate(8deg) scale(1.05); }
+}
+
+/* ── Credit line ── */
+.intro-credit {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* ── Slide up utility ── */
+@keyframes v4SlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Exit animation ── */
+#intro-overlay.intro-exit {
+  animation: v4Exit 0.48s cubic-bezier(0.4,0,1,1) forwards !important;
+}
+@keyframes v4Exit {
+  0%   { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.04); }
+}
